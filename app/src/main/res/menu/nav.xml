@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/navAverage"
+        android:icon="@drawable/calculate"
+        android:title="@string/navAverage" />
+    <item
         android:id="@+id/navExport"
         android:icon="@drawable/json_export"
         android:title="@string/navExport" />

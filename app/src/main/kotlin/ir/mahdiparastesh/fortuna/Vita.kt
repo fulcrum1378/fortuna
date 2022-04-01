@@ -17,11 +17,20 @@ class Vita : HashMap<String, Luna>() {
         save(c, this)
     }
 
-    fun removeEmptyFields(c: Context) {
+    fun reform(c: Context) {
         val removal = arrayListOf<String>()
         forEach { key, luna -> if (luna.all { it == null }) removal.add(key) }
         removal.forEach { remove(it) }
         save(c)
+    }
+
+    fun mean(): Float {
+        val scores = arrayListOf<Float>()
+        forEach { key, luna ->
+            for (v in 0 until key.toPersianCalendar().lunaMaxima())
+                (luna[v] ?: luna[31])?.let { scores.add(it) }
+        }
+        return if (scores.isEmpty()) 0f else scores.sum() / scores.size
     }
 
     companion object {
@@ -39,7 +48,8 @@ class Vita : HashMap<String, Luna>() {
         fun save(c: Context, vita: Vita) {
             FileOutputStream(Stored(c)).use { fos ->
                 fos.write(
-                    GsonBuilder().setPrettyPrinting().create().toJson(vita).encodeToByteArray()
+                    GsonBuilder().setPrettyPrinting().create().toJson(vita.toSortedMap())
+                        .encodeToByteArray()
                 )
             }
         }
@@ -61,6 +71,8 @@ class Vita : HashMap<String, Luna>() {
             while (s.length < ideal) s = "0$s"
             return s
         }
+
+        fun PersianCalendar.lunaMaxima() = getActualMaximum(Calendar.DAY_OF_MONTH)
 
         fun Luna.saveScore(c: Main, i: Int, score: Float?) {
             this[i] = score

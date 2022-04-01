@@ -72,6 +72,7 @@
     <string name="clear">Clear</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ok">OK</string>
     <string name="navOpen">Open</string>
     <string name="navClose">Close</string>
     <string name="navExport">Export to Json</string>
@@ -82,4 +83,5 @@
     <string name="importOpenError">Unfortunately an error occurred while opening the file!</string>
     <string name="importReadError">Unfortunately an error occurred while reading the file!</string>
     <string name="askImport">Are you sure you want to replace all these records?</string>
+    <string name="navAverage">Average of Total</string>
 </resources>

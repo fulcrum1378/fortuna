@@ -1,18 +1,19 @@
 package ir.mahdiparastesh.fortuna
 
+import android.annotation.SuppressLint
 import android.database.DataSetObserver
 import android.graphics.Color
-import android.icu.util.Calendar
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListAdapter
-import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import ir.mahdiparastesh.fortuna.Main.Companion.color
 import ir.mahdiparastesh.fortuna.Main.Companion.stylise
+import ir.mahdiparastesh.fortuna.Vita.Companion.lunaMaxima
 import ir.mahdiparastesh.fortuna.Vita.Companion.saveScore
 import ir.mahdiparastesh.fortuna.Vita.Companion.showScore
 import ir.mahdiparastesh.fortuna.Vita.Companion.z
@@ -31,12 +32,13 @@ class ItemDay(private val c: Main) : ListAdapter {
     override fun registerDataSetObserver(observer: DataSetObserver) {}
     override fun unregisterDataSetObserver(observer: DataSetObserver) {}
 
-    override fun getCount(): Int = c.m.calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+    override fun getCount(): Int = c.m.calendar.lunaMaxima()
 
     override fun getItem(i: Int): Float = 0f
 
     override fun getItemId(i: Int): Long = i.toLong()
 
+    @SuppressLint("SetTextI18n", "ViewHolder")
     override fun getView(i: Int, convertView: View?, parent: ViewGroup): View =
         ItemDayBinding.inflate(c.layoutInflater, parent, false).apply {
             val score: Float? = luna[i] ?: luna[31]
@@ -79,7 +81,6 @@ class ItemDay(private val c: Main) : ListAdapter {
     override fun isEnabled(i: Int): Boolean = true
 
     companion object {
-        @ColorInt
         fun Int.toValue() = toFloat() / 256f
 
         private fun Int.toScore() = -(toFloat() - 6f) / 2f
@@ -92,9 +93,11 @@ class ItemDay(private val c: Main) : ListAdapter {
                 value = this@changeVar[i]?.let { (-(it * 2f) + 6f).toInt() } ?: 6
                 wrapSelectorWheel = false
                 setFormatter { it.toScore().showScore() }
-                //textColor =
-                textSize = c.resources.displayMetrics.density * 19f
-                //forEach { (it as EditText).setText("TEST") }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    textColor = c.color(android.R.attr.textColor)
+                    textSize = c.resources.displayMetrics.density * 19f
+                }
+                // this@apply.forEach { (it as EditText).setText("THIS WON'T WORK") }
             }
             AlertDialog.Builder(c).apply {
                 setTitle(

@@ -1,5 +1,6 @@
 package ir.mahdiparastesh.fortuna
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -28,6 +29,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import ir.mahdiparastesh.fortuna.ItemDay.Companion.changeVar
+import ir.mahdiparastesh.fortuna.Vita.Companion.lunaMaxima
 import ir.mahdiparastesh.fortuna.Vita.Companion.mean
 import ir.mahdiparastesh.fortuna.Vita.Companion.showScore
 import ir.mahdiparastesh.fortuna.Vita.Companion.toKey
@@ -39,6 +41,7 @@ import java.io.FileOutputStream
 
 // adb connect adb-R58MA6P17YD-MEhKF8._adb-tls-connect._tcp
 
+@SuppressLint("InvalidFragmentVersionForActivityResult")
 class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var c: Context
     lateinit var b: MainBinding
@@ -101,12 +104,18 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             }
         }
         updateGrid()
-        if (!firstResume) m.vita?.removeEmptyFields(c)
+        if (!firstResume) m.vita?.reform(c)
+        else b.annus.clearFocus()
         firstResume = true
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.navAverage -> AlertDialog.Builder(this).apply {
+                setTitle(R.string.navAverage)
+                setMessage(m.vita?.mean().toString())
+                setNeutralButton(R.string.ok, null)
+            }.show().stylise(this)
             R.id.navExport -> exportLauncher.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = Vita.MIME_TYPE
@@ -123,11 +132,11 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     private val exportLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
-            m.vita?.removeEmptyFields(c)
+            m.vita?.reform(c)
             val bExp = try {
                 c.contentResolver.openFileDescriptor(it.data!!.data!!, "w")?.use { des ->
                     FileOutputStream(des.fileDescriptor).use { fos ->
-                        fos.write(Gson().toJson(m.vita).encodeToByteArray())
+                        fos.write(Gson().toJson(m.vita?.toSortedMap()).encodeToByteArray())
                     }
                 }
                 true
@@ -183,8 +192,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     fun updateGrid() {
         b.grid.adapter = ItemDay(this).also {
             b.defaultVar.text = it.luna.last().showScore()
-            b.lunaMean.text =
-                it.luna.mean(m.calendar.getActualMaximum(Calendar.DAY_OF_MONTH)).toString()
+            b.lunaMean.text = it.luna.mean(m.calendar.lunaMaxima()).toString()
         }
     }
 

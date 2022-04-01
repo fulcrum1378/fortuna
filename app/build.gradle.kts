@@ -11,7 +11,7 @@ android {
         minSdk = 28
         targetSdk = 31
         versionCode = 1
-        versionName = "1.1"
+        versionName = "1.3"
     }
 
     android.sourceSets.all { kotlin.srcDir("src/main/kotlin") }
@@ -27,5 +27,4 @@ dependencies {
     implementation("com.google.android.material:material:1.5.0")
     implementation("androidx.activity:activity-ktx:1.4.0")
     implementation("com.google.code.gson:gson:2.9.0")
-    implementation("androidx.core:core-ktx:1.7.0")
 }
