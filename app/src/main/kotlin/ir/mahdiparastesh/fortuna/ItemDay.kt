@@ -85,12 +85,14 @@ class ItemDay(private val c: Main) : ListAdapter {
 
         private fun Int.toScore() = -(toFloat() - 6f) / 2f
 
+        private fun Float.toVariabilis() = (-(this * 2f) + 6f).toInt()
+
         fun Luna.changeVar(c: Main, i: Int) {
             val bv = VariabilisBinding.inflate(c.layoutInflater)
             bv.root.apply {
                 maxValue = 12
                 minValue = 0
-                value = this@changeVar[i]?.let { (-(it * 2f) + 6f).toInt() } ?: 6
+                value = this@changeVar[i]?.toVariabilis() ?: lastOrNull()?.toVariabilis() ?: 6
                 wrapSelectorWheel = false
                 setFormatter { it.toScore().showScore() }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

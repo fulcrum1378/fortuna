@@ -39,8 +39,6 @@ import ir.mahdiparastesh.fortuna.databinding.MainBinding
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-// adb connect adb-R58MA6P17YD-MEhKF8._adb-tls-connect._tcp
-
 @SuppressLint("InvalidFragmentVersionForActivityResult")
 class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var c: Context

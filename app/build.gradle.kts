@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId = "ir.mahdiparastesh.fortuna"
-        minSdk = 28
+        minSdk = 26
         targetSdk = 31
         versionCode = 1
-        versionName = "1.3"
+        versionName = "1.4"
     }
 
     android.sourceSets.all { kotlin.srcDir("src/main/kotlin") }
