@@ -27,8 +27,8 @@ class Vita : HashMap<String, Luna>() {
     fun mean(): Float {
         val scores = arrayListOf<Float>()
         forEach { key, luna ->
-            for (v in 0 until key.toPersianCalendar().lunaMaxima())
-                (luna[v] ?: luna[31])?.let { scores.add(it) }
+            for (v in 0 until key.toCalendar(Main.calType).lunaMaxima())
+                (luna[v] ?: luna.default)?.let { scores.add(it) }
         }
         return if (scores.isEmpty()) 0f else scores.sum() / scores.size
     }
@@ -56,12 +56,16 @@ class Vita : HashMap<String, Luna>() {
 
         fun emptyLuna() = Array<Float?>(32) { null }
 
-        fun PersianCalendar.toKey(): String =
+        fun Calendar.toKey(): String =
             "${z(this[Calendar.YEAR], 4)}.${z(this[Calendar.MONTH] + 1)}"
 
-        fun String.toPersianCalendar(): PersianCalendar {
+        fun <CAL> String.toCalendar(klass: Class<CAL>): CAL where CAL : Calendar {
             val spl = split(".")
-            return PersianCalendar(spl[0].toInt(), spl[1].toInt() - 1, 1)
+            return klass.newInstance().apply {
+                this[Calendar.YEAR] = spl[0].toInt()
+                this[Calendar.MONTH] = spl[1].toInt() - 1
+                this[Calendar.DAY_OF_MONTH] = 1
+            }
         }
 
         fun Float?.showScore(): String = if (this != 0f) this?.toString() ?: "_" else "0"
@@ -72,7 +76,9 @@ class Vita : HashMap<String, Luna>() {
             return s
         }
 
-        fun PersianCalendar.lunaMaxima() = getActualMaximum(Calendar.DAY_OF_MONTH)
+        fun Calendar.lunaMaxima() = getActualMaximum(Calendar.DAY_OF_MONTH)
+
+        fun Calendar.defPos() = getMaximum(Calendar.DAY_OF_MONTH)
 
         fun Luna.saveScore(c: Main, i: Int, score: Float?) {
             this[i] = score
@@ -83,9 +89,15 @@ class Vita : HashMap<String, Luna>() {
 
         fun Luna.mean(maxDays: Int): Float {
             val scores = arrayListOf<Float>()
-            for (v in 0 until maxDays) (this[v] ?: this[31])?.let { scores.add(it) }
+            for (v in 0 until maxDays) (this[v] ?: this.default)?.let { scores.add(it) }
             return if (scores.isEmpty()) 0f else scores.sum() / scores.size
         }
+
+        var Luna.default: Float?
+            get() = last()
+            set(f) {
+                this[size - 1] = f
+            }
     }
 
     class Stored(c: Context) : File(c.filesDir, "vita.json")

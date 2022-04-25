@@ -13,6 +13,8 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import ir.mahdiparastesh.fortuna.Main.Companion.color
 import ir.mahdiparastesh.fortuna.Main.Companion.stylise
+import ir.mahdiparastesh.fortuna.Vita.Companion.defPos
+import ir.mahdiparastesh.fortuna.Vita.Companion.default
 import ir.mahdiparastesh.fortuna.Vita.Companion.lunaMaxima
 import ir.mahdiparastesh.fortuna.Vita.Companion.saveScore
 import ir.mahdiparastesh.fortuna.Vita.Companion.showScore
@@ -41,8 +43,8 @@ class ItemDay(private val c: Main) : ListAdapter {
     @SuppressLint("SetTextI18n", "ViewHolder")
     override fun getView(i: Int, convertView: View?, parent: ViewGroup): View =
         ItemDayBinding.inflate(c.layoutInflater, parent, false).apply {
-            val score: Float? = luna[i] ?: luna[31]
-            val isEstimated = luna[i] == null && luna[31] != null
+            val score: Float? = luna[i] ?: luna.default
+            val isEstimated = luna[i] == null && luna.default != null
             dies.text = roman[i]
             variabilis.text = (if (isEstimated) "c. " else "") + score.showScore()
             root.setBackgroundColor(
@@ -104,7 +106,8 @@ class ItemDay(private val c: Main) : ListAdapter {
             AlertDialog.Builder(c).apply {
                 setTitle(
                     c.getString(
-                        R.string.variabilis, if (i != 31) "${c.m.luna}.${z(i + 1)}" else "DEFAULT"
+                        R.string.variabilis,
+                        if (i != c.m.calendar.defPos()) "${c.m.luna}.${z(i + 1)}" else "DEFAULT"
                     )
                 )
                 setView(bv.root)

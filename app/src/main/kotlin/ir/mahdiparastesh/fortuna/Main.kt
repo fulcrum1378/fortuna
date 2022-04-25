@@ -29,11 +29,12 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import ir.mahdiparastesh.fortuna.ItemDay.Companion.changeVar
+import ir.mahdiparastesh.fortuna.Vita.Companion.defPos
 import ir.mahdiparastesh.fortuna.Vita.Companion.lunaMaxima
 import ir.mahdiparastesh.fortuna.Vita.Companion.mean
 import ir.mahdiparastesh.fortuna.Vita.Companion.showScore
+import ir.mahdiparastesh.fortuna.Vita.Companion.toCalendar
 import ir.mahdiparastesh.fortuna.Vita.Companion.toKey
-import ir.mahdiparastesh.fortuna.Vita.Companion.toPersianCalendar
 import ir.mahdiparastesh.fortuna.Vita.Companion.z
 import ir.mahdiparastesh.fortuna.databinding.MainBinding
 import java.io.FileInputStream
@@ -41,14 +42,13 @@ import java.io.FileOutputStream
 
 @SuppressLint("InvalidFragmentVersionForActivityResult")
 class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListener {
-    lateinit var c: Context
+    val c: Context get() = applicationContext
     lateinit var b: MainBinding
     val m: Model by viewModels()
     private lateinit var toggleNav: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        c = applicationContext
         b = MainBinding.inflate(layoutInflater)
         setContentView(b.root)
 
@@ -71,40 +71,42 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         b.luna.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, i: Int, id: Long) {
+                if (firstResume) return
                 m.lunaChanged = true
                 m.luna = "${z(b.annus.text, 4)}.${z(i + 1)}"
-                m.calendar = m.luna.toPersianCalendar()
+                m.calendar = m.luna.toCalendar(calType)
                 updateGrid()
             }
         }
         b.annus.addTextChangedListener {
-            if (it.toString().length != 4) return@addTextChangedListener
+            if (it.toString().length != 4 || firstResume) return@addTextChangedListener
             m.luna = "${z(it, 4)}.${z(b.luna.selectedItemPosition + 1)}"
-            m.calendar = m.luna.toPersianCalendar()
+            m.calendar = m.luna.toCalendar(calType)
             updateGrid()
         }
         b.defaultVar.setOnClickListener {
-            m.thisLuna().changeVar(this@Main, 31)
+            m.thisLuna().changeVar(this@Main, m.calendar.defPos())
         }
     }
 
-    private var firstResume = false
+    private var firstResume = true
     override fun onResume() {
         super.onResume()
         m.vita = Vita.load(c)
         if (!m.lunaChanged) {
-            m.calendar = PersianCalendar()
+            m.calendar = calType.newInstance()
             m.luna = m.calendar.toKey()
-            updateHeader(m.calendar)
+            b.annus.setText(m.calendar[Calendar.YEAR].toString())
+            b.luna.setSelection(m.calendar[Calendar.MONTH])
             if (!Vita.Stored(c).exists()) {
                 m.vita!![m.luna] = Vita.emptyLuna()
                 m.vita!!.save(c)
             }
         }
         updateGrid()
-        if (!firstResume) m.vita?.reform(c)
+        if (firstResume) m.vita?.reform(c)
         else b.annus.clearFocus()
-        firstResume = true
+        firstResume = false
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -182,11 +184,6 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             }.show().stylise(this@Main)
         }
 
-    private fun updateHeader(cal: PersianCalendar) {
-        b.annus.setText(cal[Calendar.YEAR].toString())
-        b.luna.setSelection(cal[Calendar.MONTH])
-    }
-
     fun updateGrid() {
         b.grid.adapter = ItemDay(this).also {
             b.defaultVar.text = it.luna.last().showScore()
@@ -197,6 +194,9 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     private fun pdcf(@ColorInt color: Int) = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
 
     companion object {
+        val calType = PersianCalendar::class.java
+        //val calName = calType.newInstance().type
+
         @ColorInt
         fun ContextThemeWrapper.color(@AttrRes attr: Int) = TypedValue().apply {
             theme.resolveAttribute(attr, this, true)
@@ -230,7 +230,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     class Model : ViewModel() {
         var vita: Vita? = null
         lateinit var luna: String
-        lateinit var calendar: PersianCalendar
+        lateinit var calendar: Calendar
         var lunaChanged = false
 
         fun thisLuna() = vita?.find(luna) ?: Vita.emptyLuna()
