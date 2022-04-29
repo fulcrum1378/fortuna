@@ -30,6 +30,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import ir.mahdiparastesh.fortuna.ItemDay.Companion.changeVar
 import ir.mahdiparastesh.fortuna.Vita.Companion.defPos
+import ir.mahdiparastesh.fortuna.Vita.Companion.emptyLuna
 import ir.mahdiparastesh.fortuna.Vita.Companion.lunaMaxima
 import ir.mahdiparastesh.fortuna.Vita.Companion.mean
 import ir.mahdiparastesh.fortuna.Vita.Companion.showScore
@@ -99,7 +100,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             b.annus.setText(m.calendar[Calendar.YEAR].toString())
             b.luna.setSelection(m.calendar[Calendar.MONTH])
             if (!Vita.Stored(c).exists()) {
-                m.vita!![m.luna] = Vita.emptyLuna()
+                m.vita!![m.luna] = m.calendar.emptyLuna()
                 m.vita!!.save(c)
             }
         }
@@ -233,6 +234,6 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         lateinit var calendar: Calendar
         var lunaChanged = false
 
-        fun thisLuna() = vita?.find(luna) ?: Vita.emptyLuna()
+        fun thisLuna() = vita?.find(luna) ?: calendar.emptyLuna()
     }
 }

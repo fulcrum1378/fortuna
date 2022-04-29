@@ -33,6 +33,7 @@
         <item>XXIX</item>
         <item>XXX</item>
         <item>XXXI</item>
+        <item>XXXII</item>
     </string-array>
 
     <string-array name="luna">
@@ -84,4 +85,5 @@
     <string name="importReadError">Unfortunately an error occurred while reading the file!</string>
     <string name="askImport">Are you sure you want to replace all these records?</string>
     <string name="navAverage">Average of Total</string>
+    <string name="defValue">DEFAULT</string>
 </resources>

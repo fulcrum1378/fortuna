@@ -54,7 +54,7 @@ class Vita : HashMap<String, Luna>() {
             }
         }
 
-        fun emptyLuna() = Array<Float?>(32) { null }
+        fun Calendar.emptyLuna() = Array<Float?>(defPos() + 1) { null }
 
         fun Calendar.toKey(): String =
             "${z(this[Calendar.YEAR], 4)}.${z(this[Calendar.MONTH] + 1)}"

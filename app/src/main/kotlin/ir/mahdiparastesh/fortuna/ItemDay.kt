@@ -107,7 +107,8 @@ class ItemDay(private val c: Main) : ListAdapter {
                 setTitle(
                     c.getString(
                         R.string.variabilis,
-                        if (i != c.m.calendar.defPos()) "${c.m.luna}.${z(i + 1)}" else "DEFAULT"
+                        if (i != c.m.calendar.defPos()) "${c.m.luna}.${z(i + 1)}"
+                        else c.getString(R.string.defValue)
                     )
                 )
                 setView(bv.root)
