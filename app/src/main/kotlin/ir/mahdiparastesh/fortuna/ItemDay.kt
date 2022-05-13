@@ -1,9 +1,11 @@
 package ir.mahdiparastesh.fortuna
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.database.DataSetObserver
 import android.graphics.Color
 import android.os.Build
+import android.provider.CalendarContract
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListAdapter
@@ -21,6 +23,7 @@ import ir.mahdiparastesh.fortuna.Vita.Companion.showScore
 import ir.mahdiparastesh.fortuna.Vita.Companion.z
 import ir.mahdiparastesh.fortuna.databinding.ItemDayBinding
 import ir.mahdiparastesh.fortuna.databinding.VariabilisBinding
+import java.util.*
 
 class ItemDay(private val c: Main) : ListAdapter {
     private val roman: Array<String> by lazy { c.resources.getStringArray(R.array.romanNumbers) }
@@ -73,6 +76,19 @@ class ItemDay(private val c: Main) : ListAdapter {
                 }
             )
             highlight.setOnClickListener { luna.changeVar(c, i) }
+            highlight.setOnLongClickListener {
+                val cal = Main.calType.newInstance()
+                    .apply { timeInMillis = c.m.calendar.timeInMillis }
+                cal[Calendar.DAY_OF_MONTH] = i + 1
+                c.startActivity(
+                    Intent(Intent.ACTION_VIEW).setData(
+                        CalendarContract.CONTENT_URI.buildUpon()
+                            .appendPath("time")
+                            .appendEncodedPath(cal.timeInMillis.toString()).build()
+                    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+                true
+            }
         }.root
 
     override fun hasStableIds(): Boolean = true

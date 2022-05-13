@@ -46,7 +46,6 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     val c: Context get() = applicationContext
     lateinit var b: MainBinding
     val m: Model by viewModels()
-    private lateinit var toggleNav: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +53,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         setContentView(b.root)
 
         // Toolbar & Navigation
-        toggleNav = ActionBarDrawerToggle(
+        ActionBarDrawerToggle(
             this, b.root, b.toolbar, R.string.navOpen, R.string.navClose
         ).apply {
             b.root.addDrawerListener(this)
