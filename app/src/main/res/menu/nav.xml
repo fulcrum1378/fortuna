@@ -3,7 +3,7 @@
     <item
         android:id="@+id/navAverage"
         android:icon="@drawable/calculate"
-        android:title="@string/navAverage" />
+        android:title="@string/navStat" />
     <item
         android:id="@+id/navExport"
         android:icon="@drawable/json_export"

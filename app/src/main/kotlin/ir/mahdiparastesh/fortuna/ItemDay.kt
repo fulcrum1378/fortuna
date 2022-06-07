@@ -14,7 +14,6 @@ import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import ir.mahdiparastesh.fortuna.Main.Companion.color
-import ir.mahdiparastesh.fortuna.Main.Companion.stylise
 import ir.mahdiparastesh.fortuna.Vita.Companion.defPos
 import ir.mahdiparastesh.fortuna.Vita.Companion.default
 import ir.mahdiparastesh.fortuna.Vita.Companion.lunaMaxima
@@ -135,7 +134,7 @@ class ItemDay(private val c: Main) : ListAdapter {
                 setNeutralButton(R.string.clear) { _, _ ->
                     if (c.m.vita != null) saveScore(c, i, null)
                 }
-            }.show().stylise(c)
+            }.show()
         }
     }
 }

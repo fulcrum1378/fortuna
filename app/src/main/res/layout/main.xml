@@ -20,7 +20,7 @@
             android:background="?attr/colorPrimary"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/app_name"
-            app:titleTextAppearance="@style/Theme.Fortuna.Toolbar"
+            app:titleTextAppearance="@style/TextAppearance.Fortuna.Toolbar"
             app:titleTextColor="?attr/colorOnPrimary" />
 
         <androidx.core.widget.NestedScrollView
@@ -110,7 +110,8 @@
         android:layout_gravity="start"
         android:background="?attr/colorPrimary"
         app:itemIconTint="?attr/colorOnPrimary"
-        app:itemTextAppearance="@style/Theme.Fortuna.Navigation"
+        app:itemRippleColor="@color/weakWhite"
+        app:itemTextAppearance="@style/TextAppearance.Fortuna.Navigation"
         app:itemTextColor="?attr/colorOnPrimary"
         app:menu="@menu/nav" />
 </androidx.drawerlayout.widget.DrawerLayout>

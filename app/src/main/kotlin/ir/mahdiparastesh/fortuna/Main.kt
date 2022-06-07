@@ -2,6 +2,8 @@ package ir.mahdiparastesh.fortuna
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -14,7 +16,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -112,10 +113,19 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.navAverage -> AlertDialog.Builder(this).apply {
-                setTitle(R.string.navAverage)
-                setMessage(m.vita?.mean().toString())
-                setNeutralButton(R.string.ok, null)
-            }.show().stylise(this)
+                val text = m.vita?.sumAndMean()?.let { pair ->
+                    getString(R.string.statText, pair.second, pair.first.toString())
+                }
+                setTitle(R.string.navStat)
+                setMessage(text)
+                setPositiveButton(R.string.ok, null)
+                setNeutralButton(R.string.copy) { _, _ ->
+                    (c.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)?.setPrimaryClip(
+                        ClipData.newPlainText(getString(R.string.fortunaStat), text)
+                    )
+                    Toast.makeText(c, R.string.done, Toast.LENGTH_SHORT).show()
+                }
+            }.show()
             R.id.navExport -> exportLauncher.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = Vita.MIME_TYPE
@@ -144,7 +154,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
                 false
             }
             Toast.makeText(
-                c, if (bExp) R.string.exportDone else R.string.exportUndone, Toast.LENGTH_LONG
+                c, if (bExp) R.string.done else R.string.exportUndone, Toast.LENGTH_LONG
             ).show()
         }
 
@@ -179,9 +189,10 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
                 setPositiveButton(R.string.yes) { _, _ ->
                     m.vita = imported.also { vita -> vita.save(c) }
                     updateGrid()
+                    Toast.makeText(c, R.string.done, Toast.LENGTH_LONG).show()
                 }
                 setNegativeButton(R.string.no, null)
-            }.show().stylise(this@Main)
+            }.show()
         }
 
     fun updateGrid() {
@@ -201,30 +212,6 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         fun ContextThemeWrapper.color(@AttrRes attr: Int) = TypedValue().apply {
             theme.resolveAttribute(attr, this, true)
         }.data
-
-        fun AlertDialog.stylise(c: Main): AlertDialog {
-            val tc = c.color(android.R.attr.textColor)
-            window?.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.apply {
-                typeface = c.resources.getFont(R.font.quattrocento_bold)
-            }
-            window?.findViewById<TextView>(android.R.id.message)?.apply {
-                typeface = c.resources.getFont(R.font.quattrocento_regular)
-                setTextColor(tc)
-            }
-            getButton(AlertDialog.BUTTON_POSITIVE)?.apply {
-                typeface = c.resources.getFont(R.font.quattrocento_bold)
-                setTextColor(tc)
-            }
-            getButton(AlertDialog.BUTTON_NEGATIVE)?.apply {
-                typeface = c.resources.getFont(R.font.quattrocento_bold)
-                setTextColor(tc)
-            }
-            getButton(AlertDialog.BUTTON_NEUTRAL)?.apply {
-                typeface = c.resources.getFont(R.font.quattrocento_bold)
-                setTextColor(tc)
-            }
-            return this
-        }
     }
 
     class Model : ViewModel() {

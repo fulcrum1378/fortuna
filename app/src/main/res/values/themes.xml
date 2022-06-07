@@ -1,26 +1,31 @@
 <resources>
 
-    <style name="Theme.Fortuna" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#4CAF50</item>
+    <style name="Theme.Fortuna.Base" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Theme.Fortuna" parent="Theme.Fortuna.Base">
         <item name="colorPrimaryVariant">#444CAF50</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorSecondary">#F44336</item>
         <item name="colorSecondaryVariant">#44F44336</item>
         <item name="colorOnSecondary">?attr/colorOnPrimary</item>
-        <item name="colorAccent">?attr/colorPrimary</item>
-        <item name="android:textColor">#777</item>
-        <item name="android:statusBarColor">?attr/colorPrimary</item>
-        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+        <item name="alertDialogTheme">@style/Theme.Fortuna.Dialogue</item>
     </style>
 
-    <style name="Theme.Fortuna.Toolbar" parent="Theme.Fortuna">
-        <item name="android:fontFamily">@font/morris_roman_black</item>
-        <item name="android:textColor">?attr/colorOnPrimary</item>
-        <item name="android:textSize">28sp</item>
-    </style>
-
-    <style name="Theme.Fortuna.Navigation" parent="Theme.Fortuna">
+    <style name="Theme.Fortuna.Dialogue" parent="Theme.Material3.DayNight.Dialog.Alert">
         <item name="android:fontFamily">@font/quattrocento_bold</item>
-        <item name="android:textSize">17sp</item>
+        <!-- applying these colours to those elements vary by parent Theme type. -->
+        <item name="android:textColor">@color/textColor</item><!-- title -->
+        <item name="android:textColorPrimary">@color/textColorLight</item><!-- message -->
+        <!-- buttons' text colour and their ripple effects -->
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="android:textAppearanceSmall">@style/TextAppearance.Fortuna.Dialog.Message</item>
+        <item name="android:textAppearanceButton">@style/TextAppearance.Fortuna.Dialog.Button</item>
+        <item name="android:lineSpacingExtra">9sp</item>
     </style>
 </resources>

@@ -7,4 +7,25 @@
         <item name="layout_constraintStart_toStartOf">parent</item>
         <item name="layout_constraintTop_toTopOf">parent</item>
     </style>
+
+
+    <!-- TextAppearance -->
+    <style name="TextAppearance.Fortuna.Toolbar" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/morris_roman_black</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="TextAppearance.Fortuna.Navigation" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/quattrocento_bold</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="TextAppearance.Fortuna.Dialog.Message" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/quattrocento_regular</item>
+    </style>
+
+    <style name="TextAppearance.Fortuna.Dialog.Button" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/quattrocento_regular</item>
+    </style>
 </resources>

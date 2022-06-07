@@ -51,21 +51,6 @@
         <item>Esfand</item>
     </string-array>
 
-    <string-array name="lunaShort">
-        <item>Far</item>
-        <item>Ord</item>
-        <item>Kho</item>
-        <item>Tir</item>
-        <item>Mor</item>
-        <item>Sha</item>
-        <item>Meh</item>
-        <item>Aba</item>
-        <item>Aza</item>
-        <item>Dey</item>
-        <item>Bah</item>
-        <item>Esf</item>
-    </string-array>
-
     <string name="variabilis">Variabilis: %s</string>
     <string name="year">Year</string>
     <string name="save">Save</string>
@@ -78,12 +63,14 @@
     <string name="navClose">Close</string>
     <string name="navExport">Export to Json</string>
     <string name="navImport">Import from Json</string>
-    <string name="exportDone">Done!</string>
+    <string name="done">Done!</string>
     <string name="exportUndone">Failed!</string>
-    <string name="importDone">Done!</string>
     <string name="importOpenError">Unfortunately an error occurred while opening the file!</string>
     <string name="importReadError">Unfortunately an error occurred while reading the file!</string>
     <string name="askImport">Are you sure you want to replace all these records?</string>
-    <string name="navAverage">Average of Total</string>
+    <string name="navStat">Statistics</string>
     <string name="defValue">DEFAULT</string>
+    <string name="fortunaStat">Fortuna Statistics</string>
+    <string name="statText">Average of Total: %1$f\nSum: %2$s</string>
+    <string name="copy">Copy</string>
 </resources>
