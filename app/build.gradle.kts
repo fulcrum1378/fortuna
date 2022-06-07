@@ -14,7 +14,10 @@ android {
         versionName = "1.6"
     }
 
-    android.sourceSets.all { kotlin.srcDir("src/main/kotlin") }
+    sourceSets {
+        getByName("main").java.srcDirs("src/main/java")
+        getByName("main").kotlin.srcDirs("src/main/kotlin")
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -24,7 +27,7 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.6.0")
+    implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.activity:activity-ktx:1.4.0")
     implementation("com.google.code.gson:gson:2.9.0")
 }
