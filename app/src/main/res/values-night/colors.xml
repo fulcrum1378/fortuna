@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#034C06</color>
     <color name="textColor">#FFF</color>
-    <color name="textColorLight">#FFF</color>
+    <color name="textColorThin">#FFF</color>
     <color name="gridCellBorder">#252525</color>
+    <color name="bgDialog">#424242</color>
+    <color name="pickerHighlight">#4E4E51</color>
 </resources>

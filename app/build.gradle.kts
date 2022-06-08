@@ -11,7 +11,7 @@ android {
         minSdk = 26
         targetSdk = 31
         versionCode = 1
-        versionName = "1.7.5"
+        versionName = "1.9"
     }
 
     sourceSets {

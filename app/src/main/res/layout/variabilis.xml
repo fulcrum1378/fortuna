@@ -1,4 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<NumberPicker xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    tools:ignore="MissingConstraints">
+
+    <!-- Simulated version of CupertinoPicker in Flutter:
+    https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/picker.dart -->
+
+    <View
+        android:id="@+id/highlight"
+        style="@style/parentConstraint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/picker_highlight"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <NumberPicker
+        android:id="@+id/picker"
+        style="@style/parentConstraint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:solidColor="@color/bgDialog"
+        android:theme="@style/Theme.Fortuna.Picker" />
+    <!-- android:solidColor is the colour of the vertical gradient. -->
+    <!-- android:selectionDividerHeight is the height of the divider. -->
+</androidx.constraintlayout.widget.ConstraintLayout>

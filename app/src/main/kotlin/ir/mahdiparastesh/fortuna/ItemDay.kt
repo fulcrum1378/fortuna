@@ -104,19 +104,29 @@ class ItemDay(private val c: Main) : ListAdapter {
 
         private fun Float.toVariabilis() = (-(this * 2f) + 6f).toInt()
 
+        @SuppressLint("ResourceType")
         fun Luna.changeVar(c: Main, i: Int) {
             val bv = VariabilisBinding.inflate(c.layoutInflater)
-            bv.root.apply {
+            bv.picker.apply {
                 maxValue = 12
                 minValue = 0
                 value = this@changeVar[i]?.toVariabilis() ?: lastOrNull()?.toVariabilis() ?: 6
                 wrapSelectorWheel = false
                 setFormatter { it.toScore().showScore() }
+                // CustomTypefaceSpan doesn't work; because Formatter doesn't accept CharSequence!
+                // It also didn't work when I wanted to take the text of the CustomEditText,
+                // span it and then set it again.
+                // "children": [{"name": "android.widget.NumberPicker$CustomEditText"}]
+                // I'm sure there are no other views hidden or inaccessible!
+                // I'm sure mInputText => this@apply[0]
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     textColor = c.color(android.R.attr.textColor)
-                    textSize = c.resources.displayMetrics.density * 19f
+                    textSize = c.resources.displayMetrics.density * 25f
                 }
-                // this@apply.forEach { (it as EditText).setText("THIS WON'T WORK") }
+                //(this@apply[0] as EditText).also {
+                //it.typeface = resources.getFont(R.font.quattrocento_bold)
+                //it.setTextAppearance(R.style.TextAppearance_Fortuna_Dialog_Button)
+                //}
             }
             AlertDialog.Builder(c).apply {
                 setTitle(
@@ -129,7 +139,7 @@ class ItemDay(private val c: Main) : ListAdapter {
                 setView(bv.root)
                 setNegativeButton(R.string.cancel, null)
                 setPositiveButton(R.string.save) { _, _ ->
-                    if (c.m.vita != null) saveScore(c, i, bv.root.value.toScore())
+                    if (c.m.vita != null) saveScore(c, i, bv.picker.value.toScore())
                 }
                 setNeutralButton(R.string.clear) { _, _ ->
                     if (c.m.vita != null) saveScore(c, i, null)

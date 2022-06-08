@@ -1,31 +1,38 @@
 <resources>
 
     <style name="Theme.Fortuna.Base" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">?attr/colorPrimary</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:navigationBarColor">?attr/colorPrimary</item>
+        <item name="alertDialogTheme">@style/Theme.Fortuna.Dialogue</item>
     </style>
 
     <style name="Theme.Fortuna" parent="Theme.Fortuna.Base">
+        <item name="colorPrimary">#4CAF50</item>
         <item name="colorPrimaryVariant">#444CAF50</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorSecondary">#F44336</item>
         <item name="colorSecondaryVariant">#44F44336</item>
         <item name="colorOnSecondary">?attr/colorOnPrimary</item>
-        <item name="alertDialogTheme">@style/Theme.Fortuna.Dialogue</item>
     </style>
 
     <style name="Theme.Fortuna.Dialogue" parent="Theme.Material3.DayNight.Dialog.Alert">
         <item name="android:fontFamily">@font/quattrocento_bold</item>
         <!-- applying these colours to those elements vary by parent Theme type. -->
         <item name="android:textColor">@color/textColor</item><!-- title -->
-        <item name="android:textColorPrimary">@color/textColorLight</item><!-- message -->
+        <item name="android:textColorPrimary">@color/textColorThin</item><!-- message -->
         <!-- buttons' text colour and their ripple effects -->
         <item name="colorPrimary">@color/textColor</item>
         <item name="android:textAppearanceSmall">@style/TextAppearance.Fortuna.Dialog.Message</item>
         <item name="android:textAppearanceButton">@style/TextAppearance.Fortuna.Dialog.Button</item>
         <item name="android:lineSpacingExtra">9sp</item>
+        <item name="android:windowBackground">@color/bgDialog</item>
     </style>
+
+    <style name="Theme.Fortuna.Picker" parent="Theme.Fortuna">
+        <item name="android:colorControlNormal">@android:color/transparent</item>
+    </style>
+
+    <!-- android:colorControlNormal is the colour of divider in NumberPicker and the arrow in Spinner. -->
 </resources>

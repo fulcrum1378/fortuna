@@ -1,6 +1,7 @@
 <resources>
 
     <style name="Theme.Fortuna" parent="Theme.Fortuna.Base">
+        <item name="colorPrimary">#034C06</item>
         <item name="colorPrimaryVariant">#444CAF50</item>
         <item name="colorOnPrimary">?android:attr/textColor</item>
         <item name="colorSecondary">#670D06</item>
