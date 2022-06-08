@@ -104,7 +104,6 @@ class ItemDay(private val c: Main) : ListAdapter {
 
         private fun Float.toVariabilis() = (-(this * 2f) + 6f).toInt()
 
-        @SuppressLint("ResourceType")
         fun Luna.changeVar(c: Main, i: Int) {
             val bv = VariabilisBinding.inflate(c.layoutInflater)
             bv.picker.apply {

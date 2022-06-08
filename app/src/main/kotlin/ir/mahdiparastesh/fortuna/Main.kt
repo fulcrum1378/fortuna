@@ -205,8 +205,10 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     private fun pdcf(@ColorInt color: Int) = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
 
     companion object {
-        val calType = PersianCalendar::class.java
-        //val calName = calType.newInstance().type
+        val calType = when (BuildConfig.FLAVOR) {
+            "gregorian" -> android.icu.util.GregorianCalendar::class.java
+            /*"persian"*/ else -> PersianCalendar::class.java
+        }
 
         @ColorInt
         fun ContextThemeWrapper.color(@AttrRes attr: Int) = TypedValue().apply {
