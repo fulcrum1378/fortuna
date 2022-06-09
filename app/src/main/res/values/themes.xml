@@ -33,6 +33,5 @@
     <style name="Theme.Fortuna.Picker" parent="Theme.Fortuna">
         <item name="android:colorControlNormal">@android:color/transparent</item>
     </style>
-
     <!-- android:colorControlNormal is the colour of divider in NumberPicker and the arrow in Spinner. -->
 </resources>

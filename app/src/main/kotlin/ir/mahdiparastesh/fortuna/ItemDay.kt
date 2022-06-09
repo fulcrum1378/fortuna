@@ -8,11 +8,13 @@ import android.os.Build
 import android.provider.CalendarContract
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ListAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import androidx.core.view.get
 import ir.mahdiparastesh.fortuna.Main.Companion.color
 import ir.mahdiparastesh.fortuna.Vita.Companion.defPos
 import ir.mahdiparastesh.fortuna.Vita.Companion.default
@@ -112,20 +114,11 @@ class ItemDay(private val c: Main) : ListAdapter {
                 value = this@changeVar[i]?.toVariabilis() ?: lastOrNull()?.toVariabilis() ?: 6
                 wrapSelectorWheel = false
                 setFormatter { it.toScore().showScore() }
-                // CustomTypefaceSpan doesn't work; because Formatter doesn't accept CharSequence!
-                // It also didn't work when I wanted to take the text of the CustomEditText,
-                // span it and then set it again.
-                // "children": [{"name": "android.widget.NumberPicker$CustomEditText"}]
-                // I'm sure there are no other views hidden or inaccessible!
-                // I'm sure mInputText => this@apply[0]
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     textColor = c.color(android.R.attr.textColor)
                     textSize = c.resources.displayMetrics.density * 25f
                 }
-                //(this@apply[0] as EditText).also {
-                //it.typeface = resources.getFont(R.font.quattrocento_bold)
-                //it.setTextAppearance(R.style.TextAppearance_Fortuna_Dialog_Button)
-                //}
+                (this@apply[0] as EditText).also { it.filters = arrayOf() }
             }
             AlertDialog.Builder(c).apply {
                 setTitle(

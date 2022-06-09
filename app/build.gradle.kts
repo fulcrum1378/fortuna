@@ -4,14 +4,15 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 32
+    buildToolsVersion = "33.0.0"
 
     defaultConfig {
         applicationId = "ir.mahdiparastesh.fortuna"
         minSdk = 26
-        targetSdk = 31
+        targetSdk = 32
         versionCode = 1
-        versionName = "2.1"
+        versionName = "2.3"
     }
     sourceSets {
         getByName("main").java.srcDirs("src/main/java")
