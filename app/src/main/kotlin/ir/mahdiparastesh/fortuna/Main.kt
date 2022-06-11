@@ -31,6 +31,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import ir.mahdiparastesh.fortuna.ItemDay.Companion.changeVar
 import ir.mahdiparastesh.fortuna.Vita.Companion.defPos
+import ir.mahdiparastesh.fortuna.Vita.Companion.default
 import ir.mahdiparastesh.fortuna.Vita.Companion.emptyLuna
 import ir.mahdiparastesh.fortuna.Vita.Companion.lunaMaxima
 import ir.mahdiparastesh.fortuna.Vita.Companion.mean
@@ -113,9 +114,17 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.navAverage -> AlertDialog.Builder(this).apply {
-                val text = m.vita?.sumAndMean()?.let { pair ->
-                    getString(R.string.statText, pair.second, pair.first.toString())
+                val scores = arrayListOf<Float>()
+                m.vita?.forEach { key, luna ->
+                    for (v in 0 until key.toCalendar(calType).lunaMaxima())
+                        (luna[v] ?: luna.default)?.let { scores.add(it) }
                 }
+                val sum = scores.sum()
+                val text = getString(
+                    R.string.statText,
+                    if (scores.isEmpty()) 0f else sum / scores.size.toFloat(),
+                    sum.toString()
+                )
                 setTitle(R.string.navStat)
                 setMessage(text)
                 setPositiveButton(R.string.ok, null)
@@ -135,6 +144,11 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = Vita.MIME_TYPE
             })
+            R.id.navHelp -> AlertDialog.Builder(this).apply {
+                setTitle(R.string.navHelp)
+                setMessage(R.string.help)
+                setPositiveButton(R.string.ok, null)
+            }.show()
         }
         return true
     }

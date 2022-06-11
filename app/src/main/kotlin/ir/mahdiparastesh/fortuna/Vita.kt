@@ -24,16 +24,6 @@ class Vita : HashMap<String, Luna>() {
         save(c)
     }
 
-    fun sumAndMean(): Pair<Float, Float> {
-        val scores = arrayListOf<Float>()
-        forEach { key, luna ->
-            for (v in 0 until key.toCalendar(Main.calType).lunaMaxima())
-                (luna[v] ?: luna.default)?.let { scores.add(it) }
-        }
-        val mean = if (scores.isEmpty()) 0f else scores.sum()
-        return mean to mean / scores.size
-    }
-
     companion object {
         const val MAX_RANGE = 3f
         val MIME_TYPE =
