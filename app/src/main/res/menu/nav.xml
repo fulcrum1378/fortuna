@@ -13,6 +13,10 @@
         android:icon="@drawable/json_import"
         android:title="@string/navImport" />
     <item
+        android:id="@+id/navSend"
+        android:icon="@drawable/json_send"
+        android:title="@string/navSend" />
+    <item
         android:id="@+id/navHelp"
         android:icon="@drawable/help"
         android:title="@string/navHelp" />

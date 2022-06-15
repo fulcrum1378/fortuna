@@ -17,6 +17,11 @@ class Vita : HashMap<String, Luna>() {
         save(c, this)
     }
 
+    fun export(c: Context): ByteArray {
+        reform(c)
+        return Gson().toJson(toSortedMap()).encodeToByteArray()
+    }
+
     fun reform(c: Context) {
         val removal = arrayListOf<String>()
         forEach { key, luna -> if (luna.all { it == null }) removal.add(key) }
@@ -29,6 +34,7 @@ class Vita : HashMap<String, Luna>() {
         val MIME_TYPE =
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) "application/octet-stream"
             else "application/json"
+        const val EXPORT_NAME = "fortuna.json"
 
         fun load(c: Context): Vita = if (Stored(c).exists()) {
             val data: ByteArray

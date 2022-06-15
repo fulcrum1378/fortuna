@@ -9,7 +9,7 @@
     </style>
 
 
-    <!-- TextAppearance -->
+    <!-- #TextAppearance -->
     <style name="TextAppearance.Fortuna.Toolbar" parent="@android:style/TextAppearance">
         <item name="android:fontFamily">@font/morris_roman_black</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>

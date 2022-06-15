@@ -25,6 +25,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModel
 import com.google.android.material.navigation.NavigationView
@@ -40,6 +41,11 @@ import ir.mahdiparastesh.fortuna.Vita.Companion.toCalendar
 import ir.mahdiparastesh.fortuna.Vita.Companion.toKey
 import ir.mahdiparastesh.fortuna.Vita.Companion.z
 import ir.mahdiparastesh.fortuna.databinding.MainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
@@ -122,7 +128,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
                 val sum = scores.sum()
                 val text = getString(
                     R.string.statText,
-                    if (scores.isEmpty()) 0f else sum / scores.size.toFloat(),
+                    (if (scores.isEmpty()) 0f else sum / scores.size.toFloat()).toString(),
                     sum.toString()
                 )
                 setTitle(R.string.navStat)
@@ -138,12 +144,31 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             R.id.navExport -> exportLauncher.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = Vita.MIME_TYPE
-                putExtra(Intent.EXTRA_TITLE, "fortuna.json")
+                putExtra(Intent.EXTRA_TITLE, Vita.EXPORT_NAME)
             })
             R.id.navImport -> importLauncher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = Vita.MIME_TYPE
             })
+            R.id.navSend -> {
+                val binary = m.vita?.export(c) ?: return false
+                val exported = File(cacheDir, Vita.EXPORT_NAME)
+                CoroutineScope(Dispatchers.IO).launch {
+                    runCatching {
+                        FileOutputStream(exported).use { it.write(binary) }
+                    }.onSuccess {
+                        withContext(Dispatchers.Main) {
+                            Intent(Intent.ACTION_SEND).apply {
+                                type = Vita.MIME_TYPE
+                                putExtra(
+                                    Intent.EXTRA_STREAM,
+                                    FileProvider.getUriForFile(c, packageName, exported)
+                                )
+                            }.also { startActivity(it) }
+                        }
+                    }
+                }
+            }
             R.id.navHelp -> AlertDialog.Builder(this).apply {
                 setTitle(R.string.navHelp)
                 setMessage(R.string.help)
@@ -156,11 +181,10 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     private val exportLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
-            m.vita?.reform(c)
             val bExp = try {
                 c.contentResolver.openFileDescriptor(it.data!!.data!!, "w")?.use { des ->
                     FileOutputStream(des.fileDescriptor).use { fos ->
-                        fos.write(Gson().toJson(m.vita?.toSortedMap()).encodeToByteArray())
+                        fos.write(m.vita?.export(c))
                     }
                 }
                 true
