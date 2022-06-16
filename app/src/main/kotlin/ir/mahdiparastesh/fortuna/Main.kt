@@ -80,6 +80,9 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, i: Int, id: Long) {
                 if (firstResume) return
+                if (rollingLuna) {
+                    rollingLuna = false
+                    return; }
                 m.lunaChanged = true
                 m.luna = "${z(b.annus.text, 4)}.${z(i + 1)}"
                 m.calendar = m.luna.toCalendar(calType)
@@ -88,10 +91,16 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         }
         b.annus.addTextChangedListener {
             if (it.toString().length != 4 || firstResume) return@addTextChangedListener
+            if (rollingAnnus) {
+                rollingAnnus = false
+                return@addTextChangedListener; }
+            m.lunaChanged = true
             m.luna = "${z(it, 4)}.${z(b.luna.selectedItemPosition + 1)}"
             m.calendar = m.luna.toCalendar(calType)
             updateGrid()
         }
+        b.next.setOnClickListener { rollCalendar(true) }
+        b.prev.setOnClickListener { rollCalendar(false) }
         b.defaultVar.setOnClickListener {
             m.thisLuna().changeVar(this@Main, m.calendar.defPos())
         }
@@ -104,8 +113,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         if (!m.lunaChanged) {
             m.calendar = calType.newInstance()
             m.luna = m.calendar.toKey()
-            b.annus.setText(m.calendar[Calendar.YEAR].toString())
-            b.luna.setSelection(m.calendar[Calendar.MONTH])
+            updatePanel()
             if (!Vita.Stored(c).exists()) {
                 m.vita!![m.luna] = m.calendar.emptyLuna()
                 m.vita!!.save(c)
@@ -233,11 +241,31 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             }.show()
         }
 
+    private fun updatePanel() {
+        b.annus.setText(m.calendar[Calendar.YEAR].toString())
+        b.luna.setSelection(m.calendar[Calendar.MONTH])
+    }
+
     fun updateGrid() {
         b.grid.adapter = ItemDay(this).also {
             b.defaultVar.text = it.luna.last().showScore()
             b.lunaMean.text = it.luna.mean(m.calendar.lunaMaxima()).toString()
         }
+    }
+
+    private var rollingAnnus = false
+    private var rollingLuna = false
+    private fun rollCalendar(up: Boolean) {
+        m.lunaChanged = true
+        m.calendar.roll(Calendar.MONTH, up)
+        if ((up && m.calendar[Calendar.MONTH] == 0) ||
+            (!up && m.calendar[Calendar.MONTH] == m.calendar.getActualMaximum(Calendar.MONTH))
+        ) m.calendar.roll(Calendar.YEAR, up)
+        m.luna = m.calendar.toKey()
+        rollingAnnus = true
+        rollingLuna = true
+        updatePanel()
+        updateGrid()
     }
 
     private fun pdcf(@ColorInt color: Int) = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)

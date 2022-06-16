@@ -8,6 +8,16 @@
         <item name="layout_constraintTop_toTopOf">parent</item>
     </style>
 
+    <style name="arrow">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/arrow</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:layout_marginHorizontal">6dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
 
     <!-- #TextAppearance -->
     <style name="TextAppearance.Fortuna.Toolbar" parent="@android:style/TextAppearance">
