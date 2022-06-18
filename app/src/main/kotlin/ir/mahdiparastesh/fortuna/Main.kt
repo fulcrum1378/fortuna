@@ -2,6 +2,8 @@ package ir.mahdiparastesh.fortuna
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -72,7 +74,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         b.toolbar.navigationIcon?.colorFilter =
             pdcf(color(com.google.android.material.R.attr.colorOnPrimary))
 
-        // Header
+        // Panel
         b.luna.adapter = ArrayAdapter(
             this, R.layout.spinner, resources.getStringArray(R.array.luna)
         ).apply { setDropDownViewResource(R.layout.spinner_dd) }
@@ -104,6 +106,15 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         b.defaultVar.setOnClickListener {
             m.thisLuna().changeVar(this@Main, m.calendar.defPos())
         }
+
+        // Miscellaneous
+        (c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+            NotificationChannel(
+                Reminder.REMIND, c.getString(R.string.ntfReminderDesc),
+                NotificationManager.IMPORTANCE_LOW
+            )
+        )
+        Reminder.alarm(c)
     }
 
     private var firstResume = true
