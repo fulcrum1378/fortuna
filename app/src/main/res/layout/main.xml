@@ -122,6 +122,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="?attr/colorPrimary"
+        android:paddingTop="10dp"
         app:itemIconTint="?attr/colorOnPrimary"
         app:itemRippleColor="@color/weakWhite"
         app:itemTextAppearance="@style/TextAppearance.Fortuna.Navigation"

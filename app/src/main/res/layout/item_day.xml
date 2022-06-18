@@ -11,7 +11,7 @@
         style="@style/parentConstraint"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/item_day" />
+        android:background="@drawable/dies" />
 
     <TextView
         android:id="@+id/dies"

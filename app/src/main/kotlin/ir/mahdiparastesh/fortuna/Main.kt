@@ -85,9 +85,8 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
                 if (rollingLuna) {
                     rollingLuna = false
                     return; }
-                m.lunaChanged = true
                 m.luna = "${z(b.annus.text, 4)}.${z(i + 1)}"
-                m.calendar = m.luna.toCalendar(calType)
+                m.calendar = m.luna!!.toCalendar(calType)
                 updateGrid()
             }
         }
@@ -96,9 +95,8 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             if (rollingAnnus) {
                 rollingAnnus = false
                 return@addTextChangedListener; }
-            m.lunaChanged = true
             m.luna = "${z(it, 4)}.${z(b.luna.selectedItemPosition + 1)}"
-            m.calendar = m.luna.toCalendar(calType)
+            m.calendar = m.luna!!.toCalendar(calType)
             updateGrid()
         }
         b.next.setOnClickListener { rollCalendar(true) }
@@ -112,7 +110,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             NotificationChannel(
                 Reminder.REMIND, c.getString(R.string.ntfReminderDesc),
                 NotificationManager.IMPORTANCE_LOW
-            )
+            ).apply { description = getString(R.string.ntfReminderDesc) }
         )
         Reminder.alarm(c)
     }
@@ -121,12 +119,18 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     override fun onResume() {
         super.onResume()
         m.vita = Vita.load(c)
-        if (!m.lunaChanged) {
-            m.calendar = calType.newInstance()
-            m.luna = m.calendar.toKey()
+        if (m.luna == null) {
+            val extraLuna = intent.getStringExtra(EXTRA_LUNA)
+            if (firstResume && extraLuna != null) {
+                m.luna = extraLuna
+                m.calendar = extraLuna.toCalendar(calType)
+            } else {
+                m.calendar = calType.newInstance()
+                m.luna = m.calendar.toKey()
+            }
             updatePanel()
             if (!Vita.Stored(c).exists()) {
-                m.vita!![m.luna] = m.calendar.emptyLuna()
+                m.vita!![m.luna!!] = m.calendar.emptyLuna()
                 m.vita!!.save(c)
             }
         }
@@ -267,7 +271,6 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     private var rollingAnnus = false
     private var rollingLuna = false
     private fun rollCalendar(up: Boolean) {
-        m.lunaChanged = true
         m.calendar.roll(Calendar.MONTH, up)
         if ((up && m.calendar[Calendar.MONTH] == 0) ||
             (!up && m.calendar[Calendar.MONTH] == m.calendar.getActualMaximum(Calendar.MONTH))
@@ -279,9 +282,8 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         updateGrid()
     }
 
-    private fun pdcf(@ColorInt color: Int) = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
-
     companion object {
+        const val EXTRA_LUNA = "luna"
         val calType = when (BuildConfig.FLAVOR) {
             "gregorian" -> android.icu.util.GregorianCalendar::class.java
             /*"persian"*/ else -> PersianCalendar::class.java
@@ -291,14 +293,16 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         fun ContextThemeWrapper.color(@AttrRes attr: Int) = TypedValue().apply {
             theme.resolveAttribute(attr, this, true)
         }.data
+
+        fun pdcf(@ColorInt color: Int, mode: PorterDuff.Mode = PorterDuff.Mode.SRC_IN) =
+            PorterDuffColorFilter(color, mode)
     }
 
     class Model : ViewModel() {
         var vita: Vita? = null
-        lateinit var luna: String
+        var luna: String? = null
         lateinit var calendar: Calendar
-        var lunaChanged = false
 
-        fun thisLuna() = vita?.find(luna) ?: calendar.emptyLuna()
+        fun thisLuna() = vita?.find(luna!!) ?: calendar.emptyLuna()
     }
 }

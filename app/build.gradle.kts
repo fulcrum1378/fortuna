@@ -12,7 +12,7 @@ android {
         minSdk = 26
         targetSdk = 32
         versionCode = 1
-        versionName = "2.8"
+        versionName = "2.9"
     }
     sourceSets {
         getByName("main").java.srcDirs("src/main/java")

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.database.DataSetObserver
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.provider.CalendarContract
 import android.view.View
@@ -15,12 +16,14 @@ import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.core.view.get
+import ir.mahdiparastesh.fortuna.Main.Companion.calType
 import ir.mahdiparastesh.fortuna.Main.Companion.color
 import ir.mahdiparastesh.fortuna.Vita.Companion.defPos
 import ir.mahdiparastesh.fortuna.Vita.Companion.default
 import ir.mahdiparastesh.fortuna.Vita.Companion.lunaMaxima
 import ir.mahdiparastesh.fortuna.Vita.Companion.saveScore
 import ir.mahdiparastesh.fortuna.Vita.Companion.showScore
+import ir.mahdiparastesh.fortuna.Vita.Companion.toKey
 import ir.mahdiparastesh.fortuna.Vita.Companion.z
 import ir.mahdiparastesh.fortuna.databinding.ItemDayBinding
 import ir.mahdiparastesh.fortuna.databinding.VariabilisBinding
@@ -34,6 +37,8 @@ class ItemDay(private val c: Main) : ListAdapter {
     private val cpo: Int by lazy { c.color(com.google.android.material.R.attr.colorOnPrimary) }
     private val cso: Int by lazy { c.color(com.google.android.material.R.attr.colorOnSecondary) }
     val luna = c.m.thisLuna()
+    private val todayCalendar = calType.newInstance()
+    private val todayLuna = todayCalendar.toKey()
 
     override fun registerDataSetObserver(observer: DataSetObserver) {}
     override fun unregisterDataSetObserver(observer: DataSetObserver) {}
@@ -78,7 +83,7 @@ class ItemDay(private val c: Main) : ListAdapter {
             )
             highlight.setOnClickListener { luna.changeVar(c, i) }
             highlight.setOnLongClickListener {
-                val cal = Main.calType.newInstance()
+                val cal = calType.newInstance()
                     .apply { timeInMillis = c.m.calendar.timeInMillis }
                 cal[Calendar.DAY_OF_MONTH] = i + 1
                 c.startActivity(
@@ -89,6 +94,13 @@ class ItemDay(private val c: Main) : ListAdapter {
                     ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 )
                 true
+            }
+            if (c.m.luna == todayLuna && todayCalendar[Calendar.DAY_OF_MONTH] == i + 1) {
+                highlight.setBackgroundResource(R.drawable.dies_today)
+                if (score != null) highlight.background = highlight.background.apply {
+                    colorFilter =
+                        Main.pdcf(c.color(android.R.attr.textColor), PorterDuff.Mode.SRC_OUT)
+                }
             }
         }.root
 
@@ -124,7 +136,7 @@ class ItemDay(private val c: Main) : ListAdapter {
                 setTitle(
                     c.getString(
                         R.string.variabilis,
-                        if (i != c.m.calendar.defPos()) "${c.m.luna}.${z(i + 1)}"
+                        if (i != c.m.calendar.defPos()) "${c.m.luna!!}.${z(i + 1)}"
                         else c.getString(R.string.defValue)
                     )
                 )

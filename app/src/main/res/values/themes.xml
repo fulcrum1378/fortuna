@@ -15,6 +15,7 @@
         <item name="colorSecondary">#F44336</item>
         <item name="colorSecondaryVariant">#44F44336</item>
         <item name="colorOnSecondary">?attr/colorOnPrimary</item>
+        <!--<item name="android:colorControlNormal">?attr/colorSecondary</item>-->
     </style>
 
     <style name="Theme.Fortuna.Dialogue" parent="Theme.Material3.DayNight.Dialog.Alert">

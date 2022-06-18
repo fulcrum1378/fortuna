@@ -79,7 +79,7 @@ class Vita : HashMap<String, Luna>() {
 
         fun Luna.saveScore(c: Main, i: Int, score: Float?) {
             this[i] = score
-            c.m.vita!![c.m.luna] = this
+            c.m.vita!![c.m.luna!!] = this
             c.m.vita!!.save(c.c)
             c.updateGrid()
         }
