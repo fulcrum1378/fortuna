@@ -29,7 +29,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="ir.mahdiparastesh.fortuna"
+            android:authorities="${applicationId}"
             android:exported="false"
             android:grantUriPermissions="true">
 

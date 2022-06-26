@@ -14,10 +14,6 @@ android {
         versionCode = 1
         versionName = "2.9"
     }
-    sourceSets {
-        getByName("main").java.srcDirs("src/main/java")
-        getByName("main").kotlin.srcDirs("src/main/kotlin")
-    }
 
     setFlavorDimensions(listOf("calendar"))
     productFlavors {
@@ -26,6 +22,11 @@ android {
         create("gregorian") {
             applicationIdSuffix = ".gregorian"
         }
+    }
+
+    sourceSets.getByName("main") {
+        java.srcDirs("src/main/java")
+        kotlin.srcDirs("src/main/kotlin")
     }
     sourceSets.getByName("persian") {
         res.setSrcDirs(listOf("src/main/res", "src/main/res_persian"))

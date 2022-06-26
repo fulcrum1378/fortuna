@@ -37,7 +37,7 @@ class Reminder : BroadcastReceiver() {
             REMIND -> {
                 val cal = Main.calType.newInstance().apply { timeInMillis -= 86400000L }
                 val score = Vita.load(c).getOrDefault(cal.toKey(), null)
-                    ?.get(cal[Calendar.DAY_OF_MONTH])
+                    ?.get(cal[Calendar.DAY_OF_MONTH] - 1)
                 if (score == null) NotificationManagerCompat.from(c).notify(
                     CHANNEL, NotificationCompat.Builder(c, REMIND)
                         .setSmallIcon(R.mipmap.launcher_round)
