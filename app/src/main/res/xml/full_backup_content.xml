@@ -3,4 +3,7 @@
     <include
         domain="file"
         path="vita.json" />
+    <include
+        domain="sharedpref"
+        path="settings.xml" />
 </full-backup-content>

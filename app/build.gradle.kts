@@ -12,7 +12,7 @@ android {
         minSdk = 26
         targetSdk = 32
         versionCode = 1
-        versionName = "2.9"
+        versionName = "3.1"
     }
 
     setFlavorDimensions(listOf("calendar"))
@@ -45,6 +45,6 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.6.1")
-    implementation("androidx.activity:activity-ktx:1.4.0")
+    implementation("androidx.activity:activity-ktx:1.5.0")
     implementation("com.google.code.gson:gson:2.9.0")
 }

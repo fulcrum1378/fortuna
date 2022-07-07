@@ -56,6 +56,12 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     val c: Context get() = applicationContext
     lateinit var b: MainBinding
     val m: Model by viewModels()
+    private val sp by lazy { getSharedPreferences("settings", Context.MODE_PRIVATE) }
+    var arNum: Boolean
+        get() = b.nav.menu.findItem(R.id.navArNumerals)!!.isChecked
+        set(value) {
+            b.nav.menu.findItem(R.id.navArNumerals)!!.isChecked = value
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +77,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             syncState()
         }
         b.nav.setNavigationItemSelectedListener(this)
+        arNum = sp.getBoolean(SP_ARABIC_NUMERALS, false)
         b.toolbar.navigationIcon?.colorFilter =
             pdcf(color(com.google.android.material.R.attr.colorOnPrimary))
 
@@ -164,6 +171,11 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
                     Toast.makeText(c, R.string.done, Toast.LENGTH_SHORT).show()
                 }
             }.show()
+            R.id.navArNumerals -> {
+                arNum = !arNum
+                updateGrid()
+                sp.edit().putBoolean(SP_ARABIC_NUMERALS, arNum).apply()
+            }
             R.id.navExport -> exportLauncher.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = Vita.MIME_TYPE
@@ -284,6 +296,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
 
     companion object {
         const val EXTRA_LUNA = "luna"
+        const val SP_ARABIC_NUMERALS = "arabic_numerals"
         val calType = when (BuildConfig.FLAVOR) {
             "gregorian" -> android.icu.util.GregorianCalendar::class.java
             /*"persian"*/ else -> PersianCalendar::class.java

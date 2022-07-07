@@ -54,7 +54,7 @@ class ItemDay(private val c: Main) : ListAdapter {
         ItemDayBinding.inflate(c.layoutInflater, parent, false).apply {
             val score: Float? = luna[i] ?: luna.default
             val isEstimated = luna[i] == null && luna.default != null
-            dies.text = roman[i]
+            dies.text = if (c.arNum) "${i + 1}" else roman[i]
             variabilis.text = (if (isEstimated) "c. " else "") + score.showScore()
             root.setBackgroundColor(
                 when {

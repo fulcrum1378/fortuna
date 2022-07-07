@@ -40,7 +40,7 @@ class Reminder : BroadcastReceiver() {
                     ?.get(cal[Calendar.DAY_OF_MONTH] - 1)
                 if (score == null) NotificationManagerCompat.from(c).notify(
                     CHANNEL, NotificationCompat.Builder(c, REMIND)
-                        .setSmallIcon(R.mipmap.launcher_round)
+                        .setSmallIcon(R.drawable.notification)
                         .setContentTitle(c.getString(R.string.ntfReminder))
                         .setPriority(NotificationCompat.PRIORITY_LOW)
                         .setContentIntent(

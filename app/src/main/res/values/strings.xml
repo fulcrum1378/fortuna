@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Fortuna</string>
 
-    <string-array name="romanNumbers">
+    <string-array name="romanNumbers" translatable="false">
         <item>I</item>
         <item>II</item>
         <item>III</item>
@@ -59,6 +59,7 @@
     <string name="askImport">Are you sure you want to replace all these records?</string>
     <string name="defValue">DEFAULT</string>
     <string name="navSend">Send Json to</string>
+    <string name="navArNumerals">Arabic Numerals</string>
     <string name="navHelp">Help</string>
     <string name="help">This app is designed based on the \"Hedonist\" philosophy! It\'s used to calculate the amount of pleasure and pain one senses in their life.\n\nYou can enter the quality of your life in a scale between -3 to +3 for each day.\n\nAlternatively you can estimate the number of a whole month using the field right to the year field at the top of the page.\n\nThen you can see how much pleasure and pain you\'ve sensed overall in your life.\n\nHold a day button a bit longer to view that day in the calendar of your device.</string>
     <string name="ntfReminderTitle">Daily Reminder</string>

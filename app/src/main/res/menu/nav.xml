@@ -17,6 +17,12 @@
         android:icon="@drawable/json_send"
         android:title="@string/navSend" />
     <item
+        android:id="@+id/navArNumerals"
+        android:checkable="true"
+        android:checked="false"
+        android:icon="@drawable/arabic_numerals"
+        android:title="@string/navArNumerals" />
+    <item
         android:id="@+id/navHelp"
         android:icon="@drawable/help"
         android:title="@string/navHelp" />
