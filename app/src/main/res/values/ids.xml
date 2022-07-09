@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="numArabic" type="id" />
+    <item name="numAttic" type="id" />
+    <item name="numEtruscan" type="id" />
+    <item name="numRoman" type="id" />
+    <item name="numHieroglyph" type="id" />
+</resources>

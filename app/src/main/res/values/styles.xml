@@ -19,7 +19,7 @@
     </style>
 
 
-    <!-- #TextAppearance -->
+    <!-- #TextAppearance (don't override Material TextAppearances) -->
     <style name="TextAppearance.Fortuna.Toolbar" parent="@android:style/TextAppearance">
         <item name="android:fontFamily">@font/morris_roman_black</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
@@ -27,15 +27,15 @@
     </style>
 
     <style name="TextAppearance.Fortuna.Navigation" parent="@android:style/TextAppearance">
-        <item name="android:fontFamily">@font/quattrocento_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">17sp</item>
     </style>
 
     <style name="TextAppearance.Fortuna.Dialog.Message" parent="@android:style/TextAppearance">
-        <item name="android:fontFamily">@font/quattrocento_regular</item>
+        <item name="android:fontFamily">@font/quattrocento</item>
     </style>
 
     <style name="TextAppearance.Fortuna.Dialog.Button" parent="@android:style/TextAppearance">
-        <item name="android:fontFamily">@font/quattrocento_regular</item>
+        <item name="android:fontFamily">@font/quattrocento</item>
     </style>
 </resources>

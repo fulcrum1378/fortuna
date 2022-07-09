@@ -4,10 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.icu.util.Calendar
@@ -28,6 +25,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
+import androidx.core.view.forEachIndexed
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModel
 import com.google.android.material.navigation.NavigationView
@@ -56,12 +54,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     val c: Context get() = applicationContext
     lateinit var b: MainBinding
     val m: Model by viewModels()
-    private val sp by lazy { getSharedPreferences("settings", Context.MODE_PRIVATE) }
-    var arNum: Boolean
-        get() = b.nav.menu.findItem(R.id.navArNumerals)!!.isChecked
-        set(value) {
-            b.nav.menu.findItem(R.id.navArNumerals)!!.isChecked = value
-        }
+    val sp: SharedPreferences by lazy { getSharedPreferences("settings", Context.MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +70,25 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             syncState()
         }
         b.nav.setNavigationItemSelectedListener(this)
-        arNum = sp.getBoolean(SP_ARABIC_NUMERALS, false)
         b.toolbar.navigationIcon?.colorFilter =
             pdcf(color(com.google.android.material.R.attr.colorOnPrimary))
+        for (n in BaseNumeral.all.indices) {
+            val nt = BaseNumeral.all[n]
+            b.toolbar.menu.add(
+                0, nt.id, n, "${getString(nt.name)} ${getString(R.string.numerals)}"
+            ).apply {
+                isCheckable = true
+                isChecked = sp.getString(SP_NUMERAL_TYPE, arNumType) ==
+                        (nt.jClass?.canonicalName ?: arNumType)
+            }
+        }
+        b.toolbar.setOnMenuItemClickListener { mItem ->
+            sp.edit().putString(
+                SP_NUMERAL_TYPE,
+                BaseNumeral.all.find { it.id == mItem.itemId }?.jClass?.canonicalName ?: arNumType
+            ).apply()
+            updateGrid(); updateOverflow(); true
+        }
 
         // Panel
         b.luna.adapter = ArrayAdapter(
@@ -120,6 +129,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             ).apply { description = getString(R.string.ntfReminderDesc) }
         )
         Reminder.alarm(c)
+        if (sp.contains(SP_ARABIC_NUMERALS)) sp.edit().remove(SP_ARABIC_NUMERALS).apply()
     }
 
     private var firstResume = true
@@ -171,11 +181,6 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
                     Toast.makeText(c, R.string.done, Toast.LENGTH_SHORT).show()
                 }
             }.show()
-            R.id.navArNumerals -> {
-                arNum = !arNum
-                updateGrid()
-                sp.edit().putBoolean(SP_ARABIC_NUMERALS, arNum).apply()
-            }
             R.id.navExport -> exportLauncher.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = Vita.MIME_TYPE
@@ -280,6 +285,13 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         }
     }
 
+    private fun updateOverflow() {
+        b.toolbar.menu.forEachIndexed { i, item ->
+            item.isChecked = sp.getString(SP_NUMERAL_TYPE, arNumType) ==
+                    (BaseNumeral.all[i].jClass?.canonicalName ?: arNumType)
+        }
+    }
+
     private var rollingAnnus = false
     private var rollingLuna = false
     private fun rollCalendar(up: Boolean) {
@@ -297,6 +309,8 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
     companion object {
         const val EXTRA_LUNA = "luna"
         const val SP_ARABIC_NUMERALS = "arabic_numerals"
+        const val SP_NUMERAL_TYPE = "numeral_type"
+        const val arNumType = "0"
         val calType = when (BuildConfig.FLAVOR) {
             "gregorian" -> android.icu.util.GregorianCalendar::class.java
             /*"persian"*/ else -> PersianCalendar::class.java

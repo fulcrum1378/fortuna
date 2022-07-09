@@ -3,10 +3,15 @@
     <style name="Theme.Fortuna.Base" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorAccent">?attr/colorPrimary</item>
         <item name="android:textColor">@color/textColor</item>
+        <item name="android:colorControlNormal">?android:attr/textColor</item>
+        <item name="android:colorControlHighlight">?android:attr/textColor</item>
+        <item name="android:colorControlActivated">?android:attr/textColor</item>
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:navigationBarColor">?attr/colorPrimary</item>
-        <item name="alertDialogTheme">@style/Theme.Fortuna.Dialogue</item>
         <item name="android:layoutDirection">ltr</item>
+        <item name="android:fontFamily">@font/quattrocento</item>
+        <item name="alertDialogTheme">@style/Theme.Fortuna.Dialogue</item>
+        <item name="android:actionOverflowButtonStyle">@style/Widget.Fortuna.OverflowButton</item>
     </style>
 
     <style name="Theme.Fortuna" parent="Theme.Fortuna.Base">
@@ -16,7 +21,6 @@
         <item name="colorSecondary">#F44336</item>
         <item name="colorSecondaryVariant">#44F44336</item>
         <item name="colorOnSecondary">?attr/colorOnPrimary</item>
-        <!--<item name="android:colorControlNormal">?attr/colorSecondary</item>-->
         <item name="colorSecondaryContainer">#33000000</item><!--nav checked item-->
     </style>
 
@@ -34,7 +38,10 @@
     </style>
 
     <style name="Theme.Fortuna.Picker" parent="Theme.Fortuna">
-        <item name="android:colorControlNormal">@android:color/transparent</item>
+        <item name="android:colorControlNormal">@android:color/transparent</item><!--divider-->
     </style>
-    <!-- android:colorControlNormal is the colour of divider in NumberPicker and the arrow in Spinner. -->
+
+    <style name="Widget.Fortuna.OverflowButton" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/arabic_numerals</item>
+    </style>
 </resources>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fontFamily="@font/quattrocento_bold"
+    android:textStyle="normal"
     android:paddingHorizontal="17dp"
     android:paddingVertical="15dp"
     android:textSize="14sp"

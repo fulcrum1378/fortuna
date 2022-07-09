@@ -5,6 +5,7 @@ import android.content.Intent
 import android.database.DataSetObserver
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.icu.util.Calendar
 import android.os.Build
 import android.provider.CalendarContract
 import android.view.View
@@ -27,10 +28,8 @@ import ir.mahdiparastesh.fortuna.Vita.Companion.toKey
 import ir.mahdiparastesh.fortuna.Vita.Companion.z
 import ir.mahdiparastesh.fortuna.databinding.ItemDayBinding
 import ir.mahdiparastesh.fortuna.databinding.VariabilisBinding
-import java.util.*
 
 class ItemDay(private val c: Main) : ListAdapter {
-    private val roman: Array<String> by lazy { c.resources.getStringArray(R.array.romanNumbers) }
     private val cp: Int by lazy { c.color(com.google.android.material.R.attr.colorPrimary) }
     private val cs: Int by lazy { c.color(com.google.android.material.R.attr.colorSecondary) }
     private val tc: Int by lazy { c.color(android.R.attr.textColor) }
@@ -42,11 +41,8 @@ class ItemDay(private val c: Main) : ListAdapter {
 
     override fun registerDataSetObserver(observer: DataSetObserver) {}
     override fun unregisterDataSetObserver(observer: DataSetObserver) {}
-
     override fun getCount(): Int = c.m.calendar.lunaMaxima()
-
     override fun getItem(i: Int): Float = 0f
-
     override fun getItemId(i: Int): Long = i.toLong()
 
     @SuppressLint("SetTextI18n", "ViewHolder")
@@ -54,7 +50,15 @@ class ItemDay(private val c: Main) : ListAdapter {
         ItemDayBinding.inflate(c.layoutInflater, parent, false).apply {
             val score: Float? = luna[i] ?: luna.default
             val isEstimated = luna[i] == null && luna.default != null
-            dies.text = if (c.arNum) "${i + 1}" else roman[i]
+            val numType = c.sp.getString(Main.SP_NUMERAL_TYPE, Main.arNumType)
+                .let { if (it == Main.arNumType) null else it }
+            dies.text = (numType?.let { BaseNumeral.find(it) }
+                ?.constructors?.getOrNull(0)?.newInstance(i + 1) as BaseNumeral?)
+                ?.toString() ?: "${i + 1}"
+            val enlarge =
+                BaseNumeral.all.find { it.jClass?.canonicalName == numType }?.enlarge ?: false
+            if (enlarge) dies.textSize =
+                (dies.textSize / c.resources.displayMetrics.density) * 1.75f
             variabilis.text = (if (isEstimated) "c. " else "") + score.showScore()
             root.setBackgroundColor(
                 when {
