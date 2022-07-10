@@ -7,7 +7,7 @@ import kotlin.math.pow
 abstract class BaseNumeral(
     protected val num: Int,
     private val supportsZero: Boolean = false, private val supportsNegative: Boolean = false
-) {
+) { // wanted to use UInt instead but it gets problematic in Class.forName -> getConstructor!
     abstract val chars: Array<String>
     open val defaultStr: String = "NaN"
     abstract fun parse(): String
@@ -186,6 +186,5 @@ class OldPersianNumeral(num: Int) : BaseNumeral(num) {
         return s.toString()
     }
     // https://en.wikipedia.org/wiki/Old_Persian_cuneiform#Signs
+    // Babylonian cuneiforms weren't available in unicode.
 }
-
-// Abjad + Greek + Hebrew + Cyrillic + Glagolitic + ~Phoenician + Armenian + Ge'ez + Coptic + Ethiopic
