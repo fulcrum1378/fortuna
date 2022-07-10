@@ -75,7 +75,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         for (n in BaseNumeral.all.indices) {
             val nt = BaseNumeral.all[n]
             b.toolbar.menu.add(
-                0, nt.id, n, "${getString(nt.name)} ${getString(R.string.numerals)}"
+                0, nt.id, n, getString(R.string.numerals, getString(nt.name))
             ).apply {
                 isCheckable = true
                 isChecked = sp.getString(SP_NUMERAL_TYPE, arNumType) ==

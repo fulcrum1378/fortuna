@@ -2,11 +2,22 @@ package ir.mahdiparastesh.fortuna
 
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import kotlin.math.pow
 
-abstract class BaseNumeral(num: Int) {
+abstract class BaseNumeral(
+    protected val num: Int,
+    private val supportsZero: Boolean = false, private val supportsNegative: Boolean = false
+) {
     abstract val chars: Array<String>
     open val defaultStr: String = "NaN"
-    protected val n: String = num.toString()
+    abstract fun parse(): String
+
+    override fun toString(): String =
+        if ((num > 0 || supportsZero) && (num >= 0 || supportsNegative)) try {
+            parse()
+        } catch (e: Exception) {
+            defaultStr
+        } else defaultStr
 
     companion object {
         val all = arrayOf(
@@ -14,12 +25,15 @@ abstract class BaseNumeral(num: Int) {
             NumeralType(RomanNumeral::class.java, R.string.numRoman, R.id.numRoman),
             NumeralType(EtruscanNumeral::class.java, R.string.numEtruscan, R.id.numEtruscan),
             NumeralType(AtticNumeral::class.java, R.string.numAttic, R.id.numAttic),
+            NumeralType(OldPersianNumeral::class.java, R.string.numOldPersian, R.id.numOldPersian),
+            NumeralType(BrahmiNumeral::class.java, R.string.numBrahmi, R.id.numBrahmi),
             NumeralType(
                 HieroglyphNumeral::class.java, R.string.numHieroglyph, R.id.numHieroglyph, true
             ),
         )
 
         fun find(jc: String): Class<*> = Class.forName(jc)
+        // Putting this in ItemDay::getView caused a nasty build time error.
     }
     // https://en.wikipedia.org/wiki/List_of_numeral_systems
 }
@@ -30,9 +44,10 @@ data class NumeralType(
 )
 
 abstract class AtticBasedNumeral(num: Int) : BaseNumeral(num) {
+    private val n: String = num.toString()
     abstract val fourthChar: Boolean
 
-    override fun toString(): String = try {
+    override fun parse(): String {
         val ln = n.length
         val s = StringBuilder()
         for (ii in n.indices) {
@@ -50,9 +65,7 @@ abstract class AtticBasedNumeral(num: Int) : BaseNumeral(num) {
                     s.append(base + chars[(((ln - ii) - 1) * 2) + 2])
             }
         }
-        s.toString()
-    } catch (ignored: Exception) {
-        defaultStr
+        return s.toString()
     }
 }
 
@@ -87,7 +100,8 @@ class RomanNumeral(num: Int) : AtticBasedNumeral(num) {
 
 
 abstract class GematriaLikeNumeral(num: Int) : BaseNumeral(num) {
-    override fun toString(): String = try {
+    private val n: String = num.toString()
+    override fun parse(): String {
         val ln = n.length
         val s = StringBuilder()
         for (ii in n.indices) {
@@ -95,9 +109,7 @@ abstract class GematriaLikeNumeral(num: Int) : BaseNumeral(num) {
             if (i == 0) continue
             s.append(chars[((((ln - ii) - 1) * 9) - 1) + i])
         }
-        s.toString()
-    } catch (ignored: Exception) {
-        defaultStr
+        return s.toString()
     }
 }
 
@@ -123,5 +135,57 @@ class HieroglyphNumeral(num: Int) : GematriaLikeNumeral(num) {
     // https://unicode-table.com/en/blocks/egyptian-hieroglyphs/
 }
 
-// abstract class GematriaBasedNumeral(num: Int) : GematriaLikeNumeral(num)
-// Abjad + Greek + Hebrew + Cyrillic + Glagolitic + ~Phoenician + Armenian
+class BrahmiNumeral(num: Int) : GematriaLikeNumeral(num) {
+    override val chars = arrayOf(
+        // 1..9
+        "\uD804\uDC52", "\uD804\uDC53", "\uD804\uDC54", "\uD804\uDC55", "\uD804\uDC56",
+        "\uD804\uDC57", "\uD804\uDC58", "\uD804\uDC59", "\uD804\uDC5A",
+        // 10..90
+        "\uD804\uDC5B", "\uD804\uDC5C", "\uD804\uDC5D", "\uD804\uDC5E", "\uD804\uDC5F",
+        "\uD804\uDC60", "\uD804\uDC61", "\uD804\uDC62", "\uD804\uDC63",
+        // 100 (the rest are not available in unicode!)
+        "\uD804\uDC64"
+        // except 1,000: "\uD804\uDC65" which is useless without the previous chars!
+    )
+    // https://unicode-table.com/en/blocks/brahmi/
+    // Magadhi Prakrit was Mahavira and Buddha's language.
+    // Presumably they used Brahmi numerals or maybe Kharosthi.
+}
+
+
+class OldPersianNumeral(num: Int) : BaseNumeral(num) {
+    override val chars = arrayOf(
+        "\uD800\uDFD1", "\uD800\uDFD2", // 1, 2
+        "\uD800\uDFD3", "\uD800\uDFD4", // 10, 20
+        "\uD800\uDFD5" // 100
+    )
+    // https://unicode-table.com/en/blocks/old-persian/
+
+    private fun charToInt(i: Int): Int {
+        var ii = i.toDouble()
+        if (i % 2 == 1) ii -= 1.0
+        ii /= 2
+        return 10.0.pow(ii).toInt() * (if (i % 2 == 0) 1 else 2)
+    }
+
+    override fun parse(): String {
+        val s = StringBuilder()
+        var n = num
+        while (n > 0) {
+            var subVal = 0
+            var subChar = 0
+            for (ch in chars.indices) {
+                val charVal = charToInt(ch)
+                if (charVal > n) break
+                subChar = ch
+                subVal = charVal
+            }
+            n -= subVal
+            s.append(chars[subChar])
+        }
+        return s.toString()
+    }
+    // https://en.wikipedia.org/wiki/Old_Persian_cuneiform#Signs
+}
+
+// Abjad + Greek + Hebrew + Cyrillic + Glagolitic + ~Phoenician + Armenian + Ge'ez + Coptic + Ethiopic

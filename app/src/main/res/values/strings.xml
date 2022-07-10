@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fortuna</string>
 
@@ -31,10 +32,12 @@
     <string name="ntfReminder">How was your day?</string>
 
     <!-- Numerals -->
-    <string name="numerals">Numerals</string>
+    <string name="numerals">%s Numerals</string>
     <string name="numArabic">Arabic</string>
-    <string name="numAttic">Attic</string>
-    <string name="numEtruscan">Etruscan</string>
     <string name="numRoman">Roman</string>
+    <string name="numEtruscan">Etruscan</string>
+    <string name="numAttic">Attic</string>
+    <string name="numOldPersian">Old Persian</string>
+    <string name="numBrahmi">Brahmi</string>
     <string name="numHieroglyph">Hieroglyph</string>
 </resources>
