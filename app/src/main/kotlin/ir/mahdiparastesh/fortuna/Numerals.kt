@@ -22,17 +22,31 @@ abstract class BaseNumeral(
     companion object {
         val all = arrayOf(
             NumeralType(null, R.string.numArabic, R.id.numArabic),
-            NumeralType(RomanNumeral::class.java, R.string.numRoman, R.id.numRoman),
-            NumeralType(EtruscanNumeral::class.java, R.string.numEtruscan, R.id.numEtruscan),
-            NumeralType(AtticNumeral::class.java, R.string.numAttic, R.id.numAttic),
-            NumeralType(OldPersianNumeral::class.java, R.string.numOldPersian, R.id.numOldPersian),
-            NumeralType(BrahmiNumeral::class.java, R.string.numBrahmi, R.id.numBrahmi),
+            NumeralType(
+                RomanNumeral::class.java, R.string.numRoman, R.id.numRoman
+            ), // -~0..+1400 preceded Arabic (sources claiming -900 mistake/mix it with Etruscan)
+            NumeralType(
+                BrahmiNumeral::class.java, R.string.numBrahmi, R.id.numBrahmi
+            ), // -300..+500 preceded Gupta script.
+            NumeralType(
+                OldPersianNumeral::class.java, R.string.numOldPersian, R.id.numOldPersian
+            ), // -525..-330 annihilated! (presumably Avestan and Middle Persian had no numerals.)
+            NumeralType(
+                EtruscanNumeral::class.java, R.string.numEtruscan, R.id.numEtruscan
+            ), // -700..+50 inspired and was replaced by Roman numerals.
+            NumeralType(
+                AtticNumeral::class.java, R.string.numAttic, R.id.numAttic
+            ), // -700..-300 preceded Greek numerals.
             NumeralType(
                 HieroglyphNumeral::class.java, R.string.numHieroglyph, R.id.numHieroglyph, true
-            ),
+            ), // -3200..+400 preceded Coptic script.
         )
 
-        fun find(jc: String): Class<*> = Class.forName(jc)
+        fun find(jc: String): Class<*>? = try {
+            Class.forName(jc)
+        } catch (e: ClassNotFoundException) {
+            null
+        }
         // Putting this in ItemDay::getView caused a nasty build time error.
     }
     // https://en.wikipedia.org/wiki/List_of_numeral_systems
@@ -45,7 +59,8 @@ data class NumeralType(
 
 abstract class AtticBasedNumeral(num: Int) : BaseNumeral(num) {
     private val n: String = num.toString()
-    abstract val fourthChar: Boolean
+    abstract val subtract4th: Boolean
+    open val rtl: Boolean = false
 
     override fun parse(): String {
         val ln = n.length
@@ -55,22 +70,24 @@ abstract class AtticBasedNumeral(num: Int) : BaseNumeral(num) {
             val base = chars[((ln - ii) - 1) * 2]
             val half = chars[(((ln - ii) - 1) * 2) + 1]
             when {
-                i in 0..3 || (fourthChar && i == 4) ->
+                i in 0..3 || (subtract4th && i == 4) ->
                     s.append(base.repeat(i))
-                !fourthChar && i == 4 ->
+                !subtract4th && i == 4 ->
                     s.append(base + half)
-                i in 5..8 || (fourthChar && i == 9) ->
+                i in 5..8 || (subtract4th && i == 9) ->
                     s.append(half + (base.repeat(i - 5)))
-                !fourthChar && i == 9 ->
+                !subtract4th && i == 9 ->
                     s.append(base + chars[(((ln - ii) - 1) * 2) + 2])
             }
         }
-        return s.toString()
+        var ret = s.toString()
+        if (rtl) ret = ret.reversed()
+        return ret
     }
 }
 
 class AtticNumeral(num: Int) : AtticBasedNumeral(num) {
-    override val fourthChar = true
+    override val subtract4th = true
     override val chars = arrayOf(
         "I", "\ud800\udd43", // 1, 5
         "Δ", "\ud800\udd44", // 10, 50
@@ -83,14 +100,15 @@ class AtticNumeral(num: Int) : AtticBasedNumeral(num) {
 }
 
 class EtruscanNumeral(num: Int) : AtticBasedNumeral(num) {
-    override val fourthChar = true
+    override val subtract4th = true
+    override val rtl = true
     override val chars = arrayOf(
         "\uD800\udf20", "\uD800\uDF21", "\uD800\uDF22", "\uD800\uDF23", "\uD800\uDF1F"
     )
 }
 
 class RomanNumeral(num: Int) : AtticBasedNumeral(num) {
-    override val fourthChar = false
+    override val subtract4th = false
     override val chars = arrayOf(
         "I", "V", "X", "L", "C", "D", "M",
         "I\u0305", "V\u0305", "X\u0305", "L\u0305", "C\u0305", "D\u0305", "M\u0305"

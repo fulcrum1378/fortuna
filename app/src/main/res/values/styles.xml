@@ -15,7 +15,15 @@
         <item name="android:background">@drawable/button</item>
         <item name="android:padding">6dp</item>
         <item name="android:layout_marginHorizontal">6dp</item>
-        <item name="android:layout_gravity">center_vertical</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+    </style>
+
+    <style name="tbShadow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">4dp</item>
+        <item name="android:background">@drawable/shadow</item>
+        <item name="layout_constraintTop_toBottomOf">@id/toolbar</item>
     </style>
 
 

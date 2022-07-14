@@ -5,7 +5,8 @@
     <color name="textColorThin">#555</color>
     <color name="weakWhite">#44FFFFFF</color>
     <color name="diesBorder">#F0F0F0</color>
-    <color name="diesBorderToday">?attr/colorSecondaryVariant</color>
+    <color name="diesBorderToday">#44000000</color>
     <color name="bgDialog">#FFF</color>
     <color name="pickerHighlight">#EFEFF0</color>
+    <color name="shadow">#40000000</color>
 </resources>

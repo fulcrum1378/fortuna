@@ -32,7 +32,6 @@
     <string name="ntfReminder">How was your day?</string>
 
     <!-- Numerals -->
-    <string name="numerals">%s Numerals</string>
     <string name="numArabic">Arabic</string>
     <string name="numRoman">Roman</string>
     <string name="numEtruscan">Etruscan</string>

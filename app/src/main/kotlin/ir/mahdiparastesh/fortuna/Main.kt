@@ -74,9 +74,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             pdcf(color(com.google.android.material.R.attr.colorOnPrimary))
         for (n in BaseNumeral.all.indices) {
             val nt = BaseNumeral.all[n]
-            b.toolbar.menu.add(
-                0, nt.id, n, getString(R.string.numerals, getString(nt.name))
-            ).apply {
+            b.toolbar.menu.add(0, nt.id, n, nt.name).apply {
                 isCheckable = true
                 isChecked = sp.getString(SP_NUMERAL_TYPE, arNumType) ==
                         (nt.jClass?.canonicalName ?: arNumType)

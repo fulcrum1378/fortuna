@@ -4,6 +4,7 @@
     <color name="textColor">#FFF</color>
     <color name="textColorThin">#FFF</color>
     <color name="diesBorder">#252525</color>
+    <color name="diesBorderToday">#44FFFFFF</color>
     <color name="bgDialog">#424242</color>
     <color name="pickerHighlight">#4E4E51</color>
 </resources>

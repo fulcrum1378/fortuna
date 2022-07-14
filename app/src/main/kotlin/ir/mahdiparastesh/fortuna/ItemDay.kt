@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.database.DataSetObserver
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.icu.util.Calendar
 import android.os.Build
 import android.provider.CalendarContract
@@ -99,13 +98,8 @@ class ItemDay(private val c: Main) : ListAdapter {
                 )
                 true
             }
-            if (c.m.luna == todayLuna && todayCalendar[Calendar.DAY_OF_MONTH] == i + 1) {
+            if (c.m.luna == todayLuna && todayCalendar[Calendar.DAY_OF_MONTH] == i + 1)
                 highlight.setBackgroundResource(R.drawable.dies_today)
-                if (score != null) highlight.background = highlight.background.apply {
-                    colorFilter =
-                        Main.pdcf(c.color(android.R.attr.textColor), PorterDuff.Mode.SRC_OUT)
-                }
-            }
         }.root
 
     override fun hasStableIds(): Boolean = true
