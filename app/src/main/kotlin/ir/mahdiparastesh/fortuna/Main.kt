@@ -127,7 +127,8 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             ).apply { description = getString(R.string.ntfReminderDesc) }
         )
         Reminder.alarm(c)
-        if (sp.contains(SP_ARABIC_NUMERALS)) sp.edit().remove(SP_ARABIC_NUMERALS).apply()
+        if (m.showingStat) stat()
+        if (m.showingHelp) help()
     }
 
     private var firstResume = true
@@ -150,35 +151,16 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
             }
         }
         updateGrid()
-        if (firstResume) m.vita?.reform(c)
-        else b.annus.clearFocus()
+        if (firstResume) {
+            m.changingVar?.also { m.vita!![m.luna!!]?.changeVar(this@Main, it) }
+            m.vita?.reform(c)
+        } else b.annus.clearFocus()
         firstResume = false
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.navAverage -> AlertDialog.Builder(this).apply {
-                val scores = arrayListOf<Float>()
-                m.vita?.forEach { key, luna ->
-                    for (v in 0 until key.toCalendar(calType).lunaMaxima())
-                        (luna[v] ?: luna.default)?.let { scores.add(it) }
-                }
-                val sum = scores.sum()
-                val text = getString(
-                    R.string.statText,
-                    (if (scores.isEmpty()) 0f else sum / scores.size.toFloat()).toString(),
-                    sum.toString()
-                )
-                setTitle(R.string.navStat)
-                setMessage(text)
-                setPositiveButton(R.string.ok, null)
-                setNeutralButton(R.string.copy) { _, _ ->
-                    (c.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)?.setPrimaryClip(
-                        ClipData.newPlainText(getString(R.string.fortunaStat), text)
-                    )
-                    Toast.makeText(c, R.string.done, Toast.LENGTH_SHORT).show()
-                }
-            }.show()
+            R.id.navStat -> stat()
             R.id.navExport -> exportLauncher.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = Vita.MIME_TYPE
@@ -207,11 +189,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
                     }
                 }
             }
-            R.id.navHelp -> AlertDialog.Builder(this).apply {
-                setTitle(R.string.navHelp)
-                setMessage(R.string.help)
-                setPositiveButton(R.string.ok, null)
-            }.show()
+            R.id.navHelp -> help()
         }
         return true
     }
@@ -304,9 +282,45 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         updateGrid()
     }
 
+    private fun stat() {
+        m.showingStat = true
+        AlertDialog.Builder(this).apply {
+            val scores = arrayListOf<Float>()
+            m.vita?.forEach { key, luna ->
+                for (v in 0 until key.toCalendar(calType).lunaMaxima())
+                    (luna[v] ?: luna.default)?.let { scores.add(it) }
+            }
+            val sum = scores.sum()
+            val text = getString(
+                R.string.statText,
+                (if (scores.isEmpty()) 0f else sum / scores.size.toFloat()).toString(),
+                sum.toString()
+            )
+            setTitle(R.string.navStat)
+            setMessage(text)
+            setPositiveButton(R.string.ok, null)
+            setNeutralButton(R.string.copy) { _, _ ->
+                (c.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)?.setPrimaryClip(
+                    ClipData.newPlainText(getString(R.string.fortunaStat), text)
+                )
+                Toast.makeText(c, R.string.done, Toast.LENGTH_SHORT).show()
+            }
+            setOnDismissListener { m.showingStat = false }
+        }.show()
+    }
+
+    private fun help() {
+        m.showingHelp = true
+        AlertDialog.Builder(this).apply {
+            setTitle(R.string.navHelp)
+            setMessage(R.string.help)
+            setPositiveButton(R.string.ok, null)
+            setOnDismissListener { m.showingHelp = false }
+        }.show()
+    }
+
     companion object {
         const val EXTRA_LUNA = "luna"
-        const val SP_ARABIC_NUMERALS = "arabic_numerals"
         const val SP_NUMERAL_TYPE = "numeral_type"
         const val arNumType = "0"
         val calType = when (BuildConfig.FLAVOR) {
@@ -327,6 +341,9 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         var vita: Vita? = null
         var luna: String? = null
         lateinit var calendar: Calendar
+        var changingVar: Int? = null
+        var showingStat = false
+        var showingHelp = false
 
         fun thisLuna() = vita?.find(luna!!) ?: calendar.emptyLuna()
     }

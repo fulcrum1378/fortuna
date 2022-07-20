@@ -117,6 +117,7 @@ class ItemDay(private val c: Main) : ListAdapter {
         private fun Float.toVariabilis() = (-(this * 2f) + 6f).toInt()
 
         fun Luna.changeVar(c: Main, i: Int) {
+            c.m.changingVar = i
             val bv = VariabilisBinding.inflate(c.layoutInflater)
             bv.picker.apply {
                 maxValue = 12
@@ -146,6 +147,7 @@ class ItemDay(private val c: Main) : ListAdapter {
                 setNeutralButton(R.string.clear) { _, _ ->
                     if (c.m.vita != null) saveScore(c, i, null)
                 }
+                setOnDismissListener { c.m.changingVar = null }
             }.show()
         }
     }
