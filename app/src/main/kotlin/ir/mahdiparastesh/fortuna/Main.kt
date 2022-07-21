@@ -120,13 +120,16 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         }
 
         // Miscellaneous
-        (c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-            NotificationChannel(
-                Reminder.REMIND, c.getString(R.string.ntfReminderDesc),
-                NotificationManager.IMPORTANCE_LOW
-            ).apply { description = getString(R.string.ntfReminderDesc) }
-        )
-        Reminder.alarm(c)
+        (c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
+            cancel(Reminder.CHANNEL)
+            createNotificationChannel(
+                NotificationChannel(
+                    Reminder.REMIND, c.getString(R.string.ntfReminderDesc),
+                    NotificationManager.IMPORTANCE_LOW
+                ).apply { description = getString(R.string.ntfReminderDesc) }
+            )
+        }
+        Reminder.alarm(c) // Reminder.test(c)
         if (m.showingStat) stat()
         if (m.showingHelp) help()
     }
@@ -152,7 +155,10 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
         }
         updateGrid()
         if (firstResume) {
-            m.changingVar?.also { m.vita!![m.luna!!]?.changeVar(this@Main, it) }
+            if (intent.hasExtra(EXTRA_DIES))
+                intent?.getIntExtra(EXTRA_DIES, 0)
+                    ?.also { m.vita!![m.luna!!]?.changeVar(this@Main, it - 1) }
+            else m.changingVar?.also { m.vita!![m.luna!!]?.changeVar(this@Main, it) }
             m.vita?.reform(c)
         } else b.annus.clearFocus()
         firstResume = false
@@ -321,6 +327,7 @@ class Main : ComponentActivity(), NavigationView.OnNavigationItemSelectedListene
 
     companion object {
         const val EXTRA_LUNA = "luna"
+        const val EXTRA_DIES = "dies"
         const val SP_NUMERAL_TYPE = "numeral_type"
         const val arNumType = "0"
         val calType = when (BuildConfig.FLAVOR) {

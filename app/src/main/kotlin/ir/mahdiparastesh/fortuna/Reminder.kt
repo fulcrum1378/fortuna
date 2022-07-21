@@ -30,6 +30,11 @@ class Reminder : BroadcastReceiver() {
         private fun broadcast(c: Context): PendingIntent = PendingIntent.getBroadcast(
             c, 0, Intent(c, Reminder::class.java).setAction(REMIND), PendingIntent.FLAG_IMMUTABLE
         )
+
+        @Suppress("unused")
+        fun test(c: Context) {
+            broadcast(c).send()
+        }
     }
 
     override fun onReceive(c: Context, intent: Intent) {
@@ -46,7 +51,9 @@ class Reminder : BroadcastReceiver() {
                         .setContentIntent(
                             PendingIntent.getActivity(
                                 c, 0,
-                                Intent(c, Main::class.java).putExtra(Main.EXTRA_LUNA, cal.toKey()),
+                                Intent(c, Main::class.java)
+                                    .putExtra(Main.EXTRA_LUNA, cal.toKey())
+                                    .putExtra(Main.EXTRA_DIES, cal.get(Calendar.DAY_OF_MONTH)),
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
                                     PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
                             )

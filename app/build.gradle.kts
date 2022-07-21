@@ -12,16 +12,14 @@ android {
         minSdk = 26
         targetSdk = 32
         versionCode = 1
-        versionName = "3.7.5"
+        versionName = "3.8"
     }
 
     setFlavorDimensions(listOf("calendar"))
     productFlavors {
         all { dimension = "calendar" }
         create("persian")
-        create("gregorian") {
-            applicationIdSuffix = ".gregorian"
-        }
+        create("gregorian") { applicationIdSuffix = ".gregorian" }
     }
 
     sourceSets.getByName("main") {

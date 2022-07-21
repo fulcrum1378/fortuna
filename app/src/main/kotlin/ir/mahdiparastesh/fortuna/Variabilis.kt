@@ -19,6 +19,9 @@ class Variabilis(
 
     override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
         super.addView(child, params)
-        if (child is EditText) child.typeface = context.resources.getFont(R.font.quattrocento_bold)
+        if (child is EditText) {
+            child.typeface = context.resources.getFont(R.font.quattrocento_bold)
+            child.isEnabled = false
+        }
     }
 }
