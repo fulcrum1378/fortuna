@@ -58,11 +58,11 @@ data class NumeralType(
 )
 
 abstract class AtticBasedNumeral(num: Int) : BaseNumeral(num) {
-    private val n: String = num.toString()
     abstract val subtract4th: Boolean
     open val rtl: Boolean = false
 
     override fun parse(): String {
+        val n: String = num.toString()
         val ln = n.length
         val s = StringBuilder()
         for (ii in n.indices) {
@@ -118,8 +118,8 @@ class RomanNumeral(num: Int) : AtticBasedNumeral(num) {
 
 
 abstract class GematriaLikeNumeral(num: Int) : BaseNumeral(num) {
-    private val n: String = num.toString()
     override fun parse(): String {
+        val n: String = num.toString()
         val ln = n.length
         val s = StringBuilder()
         for (ii in n.indices) {
